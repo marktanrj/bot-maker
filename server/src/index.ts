@@ -1,7 +1,8 @@
+import "reflect-metadata";
 import express, { Request, Response } from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
-import { sequelize } from "./database/sequelize";
+import { createConnection } from "typeorm";
 import _ from "lodash";
 import { logger } from "./config/logger";
 
@@ -16,10 +17,10 @@ app.get("/", (req: Request, res: Response) => {
 
 (async () => {
   try {
-    await sequelize.authenticate();
-    logger.verbose("Connection has been established successfully");
-  } catch (error) {
-    logger.error("Unable to connect to the database:", error);
+    const connection = await createConnection();
+    logger.verbose("Connected to database!");
+  } catch (err) {
+    logger.error("[Error]", err);
   }
 })();
 
