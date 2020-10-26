@@ -5,11 +5,13 @@ import cors from "cors";
 import { createConnection } from "typeorm";
 import _ from "lodash";
 import { logger } from "./config/logger";
+import helmet from "helmet";
 
 const app = express();
 
 app.use(bodyParser.json());
 app.use(cors());
+app.use(helmet());
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Welcome");
