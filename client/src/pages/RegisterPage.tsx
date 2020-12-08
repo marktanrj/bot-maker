@@ -3,20 +3,20 @@ import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { Link } from "react-router-dom";
 
-interface SignInFormValues {
+interface RegisterFormValues {
   email: string;
   password: string;
   confirmPassword: string;
 }
 
-const SignupSchema = Yup.object().shape({
+const RegisterSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Required"),
   password: Yup.string().min(6, "Too Short!").required("Required"),
   confirmPassword: Yup.string().oneOf([Yup.ref("password"), null], "Passwords must match"),
 });
 
 export default function RegisterPage() {
-  const initialValues: SignInFormValues = { email: "", password: "", confirmPassword: "" };
+  const initialValues: RegisterFormValues = { email: "", password: "", confirmPassword: "" };
 
   return (
     <div className="container mx-auto text-center">
@@ -26,7 +26,7 @@ export default function RegisterPage() {
           <div className="bg-white text-left px-10 py-5 rounded-md">
             <Formik
               initialValues={initialValues}
-              validationSchema={SignupSchema}
+              validationSchema={RegisterSchema}
               onSubmit={(values, actions) => {
                 console.log({ values, actions });
                 alert(JSON.stringify(values, null, 2));

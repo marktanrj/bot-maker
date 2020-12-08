@@ -5,9 +5,15 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import "./styles/tailwind.output.css";
 
+// redux
+import { Provider } from "react-redux";
+import store from "./store/store";
+
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Provider store={store}>
+      <App />
+    </Provider>
   </React.StrictMode>,
   document.getElementById("root")
 );

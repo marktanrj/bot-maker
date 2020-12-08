@@ -8,7 +8,7 @@ interface SignInFormValues {
   password: string;
 }
 
-const SignupSchema = Yup.object().shape({
+const SignInSchema = Yup.object().shape({
   email: Yup.string().required("Required"),
   password: Yup.string().required("Required"),
 });
@@ -24,7 +24,7 @@ export default function SignInPage() {
           <div className="bg-white text-left px-10 py-5 rounded-md">
             <Formik
               initialValues={initialValues}
-              validationSchema={SignupSchema}
+              validationSchema={SignInSchema}
               onSubmit={(values, actions) => {
                 console.log({ values, actions });
                 alert(JSON.stringify(values, null, 2));

@@ -1,15 +1,18 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import SignInPage from "./pages/SignInPage";
-import RegisterPage from "./pages/RegisterPage";
+
+const SignInPage = React.lazy(() => import("./pages/SignInPage"));
+const RegisterPage = React.lazy(() => import("./pages/RegisterPage"));
 
 function App() {
   return (
     <div className="bg-gray-200">
       <Router>
         <Switch>
-          <Route exact path="/" component={SignInPage} />
-          <Route exact path="/register" component={RegisterPage} />
+          <Suspense fallback={<div>Loading...</div>}>
+            <Route exact path="/" component={SignInPage} />
+            <Route exact path="/register" component={RegisterPage} />
+          </Suspense>
         </Switch>
       </Router>
     </div>
