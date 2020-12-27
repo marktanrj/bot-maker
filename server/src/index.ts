@@ -1,31 +1,39 @@
 import "reflect-metadata";
-import express, { Request, Response } from "express";
+import express, { Request, Response, NextFunction } from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import { createConnection } from "typeorm";
 import _ from "lodash";
-import { logger } from "./config/logger";
+import { logger } from "./util/logger";
 import helmet from "helmet";
 
-const app = express();
+import userRoute from "./routes/userRoute";
 
-app.use(bodyParser.json());
-app.use(cors());
-app.use(helmet());
+const main = async () => {
+  const connection = await createConnection();
+  logger.verbose("Connected to database!");
 
-app.get("/", (req: Request, res: Response) => {
-  res.send("Welcome");
-});
+  const app = express();
 
-(async () => {
-  try {
-    const connection = await createConnection();
-    logger.verbose("Connected to database!");
-  } catch (err) {
-    logger.error("[Error]", err);
-  }
-})();
+  app.use(bodyParser.json());
+  app.use(cors());
+  app.use(helmet());
 
-app.listen(5000, () => {
-  logger.verbose("app is listening to port 5000 ");
+  app.get("/", (req: Request, res: Response) => {
+    res.send("Welcome");
+  });
+
+  app.use("/user", userRoute);
+
+  app.use(function (err: any, req: Request, res: Response, next: NextFunction) {
+    res.status(400).send(err.message);
+  });
+
+  app.listen(5000, () => {
+    logger.verbose("app is listening to port 5000 ");
+  });
+};
+
+main().catch((err) => {
+  logger.error("[Error]", err);
 });
