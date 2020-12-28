@@ -7,8 +7,14 @@ interface registerFields {
   password: string;
 }
 
-export const validatorWrapperError = ValidationError;
-export type validatorWrapperErrorType = ValidationError;
+export class validatorWrapperError extends Error {
+  errors: string[];
+
+  constructor(errors: string[]) {
+    super();
+    this.errors = errors;
+  }
+}
 
 export const checkRegisterFields = async ({ username, email, password }: registerFields): Promise<void | Error> => {
   const schema = yup.object().shape({
@@ -17,12 +23,16 @@ export const checkRegisterFields = async ({ username, email, password }: registe
     password: yup.string().required().min(6),
   });
 
-  await schema.validate(
-    {
-      username,
-      email,
-      password,
-    },
-    { abortEarly: false },
-  );
+  try {
+    await schema.validate(
+      {
+        username,
+        email,
+        password,
+      },
+      { abortEarly: false },
+    );
+  } catch (err) {
+    throw new validatorWrapperError((<ValidationError>err).errors);
+  }
 };
