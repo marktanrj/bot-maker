@@ -1,13 +1,18 @@
-import { logger } from "../util/logger";
+import { logger } from "../utils/loggerWrapper";
 import express, { Request, Response, NextFunction } from "express";
-import { ValidationError } from "yup";
+import { validatorWrapperError, validatorWrapperErrorType } from "../utils/validatorWrapper";
 
-export default async function (err: Error, req: Request, res: Response, next: NextFunction) {
+export default async function (
+  err: Error | validatorWrapperErrorType,
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   logger.error(err);
 
-  const isErrorFromYup = err instanceof ValidationError;
-  if (isErrorFromYup) {
-    res.status(400).json({ errors: (<ValidationError>err).errors });
+  const isValidatorError = err instanceof validatorWrapperError;
+  if (isValidatorError) {
+    res.status(400).json({ errors: (<validatorWrapperErrorType>err).errors });
   }
   res.sendStatus(400);
 }
