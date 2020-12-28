@@ -33,6 +33,6 @@ export const checkRegisterFields = async ({ username, email, password }: registe
       { abortEarly: false },
     );
   } catch (err) {
-    throw new validatorWrapperError((<ValidationError>err).errors);
+    throw new ValidatorWrapperError((<ValidationError>err).errors);
   }
 };
