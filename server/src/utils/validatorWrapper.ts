@@ -7,7 +7,7 @@ interface registerFields {
   password: string;
 }
 
-export class validatorWrapperError extends Error {
+export class ValidatorWrapperError extends Error {
   errors: string[];
 
   constructor(errors: string[]) {
