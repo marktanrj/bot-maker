@@ -4,7 +4,7 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import { createConnection, getConnectionManager } from "typeorm";
 import _ from "lodash";
-import { logger } from "./util/logger";
+import { logger } from "./utils/loggerWrapper";
 import helmet from "helmet";
 
 import userRoute from "./components/user/userRoute";
