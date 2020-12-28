@@ -9,4 +9,5 @@ export default async function (err: Error, req: Request, res: Response, next: Ne
   if (isErrorFromYup) {
     res.status(400).json({ errors: (<ValidationError>err).errors });
   }
+  res.sendStatus(400);
 }

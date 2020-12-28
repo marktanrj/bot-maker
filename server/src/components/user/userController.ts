@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { getConnection } from "typeorm";
-import { User } from "../entity/User";
+import { User } from "../../entity/User";
 import bcrypt from "bcrypt";
 
 export const register = async (req: Request, res: Response) => {

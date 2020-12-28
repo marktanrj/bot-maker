@@ -7,7 +7,7 @@ import _ from "lodash";
 import { logger } from "./util/logger";
 import helmet from "helmet";
 
-import userRoute from "./routes/userRoute";
+import userRoute from "./components/user/userRoute";
 import errorHandler from "./middleware/errorHandler";
 
 const PORT = 4000;
