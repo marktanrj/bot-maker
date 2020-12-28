@@ -6,7 +6,7 @@
   "scripts": {
     "type-check": "tsc --noEmit",
     "watch": "tsc -w",
-    "dev": "nodemon --exec ts-node ./src/index.ts --ext ts,js --watch src",
+    "dev": "nodemon --exec ts-node ./src/index.ts --ext ts,js --watch src --ignore src/**/*.spec.ts",
     "start": "node ./build/index.js",
     "lint": "yarn eslint . --ext .js,.jsx,.ts,.tsx"
   },
