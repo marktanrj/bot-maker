@@ -58,7 +58,7 @@ export default function SignInPage() {
                       <h5 className="text-xl">Sign In</h5>
                     </div>
                     <div>
-                      <p>Email Address or Username</p>
+                      <p>Email or Username</p>
                       <Field id="identifier" name="identifier" required className="w-full p-1 border border-gray-500 rounded" />
                       {errors.identifier && touched.identifier ? <div className="text-red-500">{errors.identifier}</div> : null}
                     </div>
