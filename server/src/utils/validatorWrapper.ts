@@ -1,12 +1,6 @@
 import * as yup from "yup";
 import { ValidationError } from "yup";
 
-interface registerFields {
-  username: string;
-  email: string;
-  password: string;
-}
-
 export class ValidatorWrapperError extends Error {
   errors: string[];
 
@@ -16,7 +10,15 @@ export class ValidatorWrapperError extends Error {
   }
 }
 
-export const checkRegisterFields = async ({ username, email, password }: registerFields): Promise<void | Error> => {
+export const checkRegisterFields = async ({
+  username,
+  email,
+  password,
+}: {
+  username: string;
+  email: string;
+  password: string;
+}): Promise<void | Error> => {
   const schema = yup.object().shape({
     username: yup.string().required(),
     email: yup.string().email().required(),
@@ -28,6 +30,31 @@ export const checkRegisterFields = async ({ username, email, password }: registe
       {
         username,
         email,
+        password,
+      },
+      { abortEarly: false },
+    );
+  } catch (err) {
+    throw new ValidatorWrapperError((<ValidationError>err).errors);
+  }
+};
+
+export const checkSignInFields = async ({
+  identifier,
+  password,
+}: {
+  identifier: string;
+  password: string;
+}): Promise<void | Error> => {
+  const schema = yup.object().shape({
+    identifier: yup.string().required(),
+    password: yup.string().required(),
+  });
+
+  try {
+    await schema.validate(
+      {
+        identifier,
         password,
       },
       { abortEarly: false },
