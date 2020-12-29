@@ -35,6 +35,8 @@ export const register = async (req: Request, res: Response): Promise<void | Resp
     user.username = username;
     user.password = hashedPassword;
     await repository.save(user);
+
+    return res.sendStatus(200);
   } catch (err) {
     return res.status(500).json({
       errors: [err.message],
