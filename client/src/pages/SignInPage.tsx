@@ -1,7 +1,13 @@
 import React from "react";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+
+import { RootState } from "../store/store";
+import { setToast } from "../store/slices/toastSlice";
+import { signInUser } from "../store/slices/userSlice";
+import SpinnerComponent from "../components/common/SpinnerComponent";
 
 interface SignInFormValues {
   identifier: string;
@@ -14,7 +20,21 @@ const SignInSchema = Yup.object().shape({
 });
 
 export default function SignInPage() {
+  const dispatch = useDispatch();
+  const history = useHistory();
+
   const initialValues: SignInFormValues = { identifier: "", password: "" };
+
+  const loadingSignIn = useSelector((state: RootState) => state.userReducer.loadingSignIn);
+
+  const onSubmit = async ({ identifier, password }: SignInFormValues) => {
+    const response: any = await dispatch(signInUser({ identifier, password }));
+    if (response.error) {
+      dispatch(setToast({ type: "error", message: response.payload }));
+    } else {
+      history.push("/dashboard");
+    }
+  };
 
   return (
     <div className="container mx-auto text-center">
@@ -22,15 +42,7 @@ export default function SignInPage() {
         <div className="grid grid-cols-1 gap-4 w-full lg:w-2/6">
           <h2 className="text-2xl font-bold">Bot Maker</h2>
           <div className="bg-white text-left px-10 py-5 rounded-md">
-            <Formik
-              initialValues={initialValues}
-              validationSchema={SignInSchema}
-              onSubmit={(values, actions) => {
-                console.log({ values, actions });
-                alert(JSON.stringify(values, null, 2));
-                actions.setSubmitting(false);
-              }}
-            >
+            <Formik initialValues={initialValues} validationSchema={SignInSchema} onSubmit={onSubmit}>
               {({ errors, touched }) => (
                 <Form>
                   <div className="grid gap-3">
@@ -52,10 +64,11 @@ export default function SignInPage() {
                     </div>
                     <div>
                       <p>Password</p>
-                      <Field id="password" name="password" required className="w-full p-1 border border-gray-500 rounded" />
+                      <Field id="password" name="password" type="password" required className="w-full p-1 border border-gray-500 rounded" />
                       {errors.password && touched.password ? <div className="text-red-500">{errors.password}</div> : null}
                     </div>
                     <button className="rounded-md p-1 bg-red-500 text-white hover:bg-red-700 focus:outline-none transition ease-out duration-500 transform hover:scale-105">
+                      <SpinnerComponent loading={loadingSignIn} />
                       Sign in
                     </button>
                   </div>

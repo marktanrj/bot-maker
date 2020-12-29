@@ -2,10 +2,12 @@ import React from "react";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { Link, useHistory } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { registerUser } from "../store/slices/userSlice";
 import { setToast } from "../store/slices/toastSlice";
+import { RootState } from "../store/store";
+import SpinnerComponent from "../components/common/SpinnerComponent";
 
 interface RegisterFormValues {
   username: string;
@@ -15,7 +17,7 @@ interface RegisterFormValues {
 }
 
 const RegisterSchema = Yup.object().shape({
-  username: Yup.string().min(6, "Too Short!").required("Required"),
+  username: Yup.string().min(3, "Too Short!").required("Required"),
   email: Yup.string().email("Invalid email").required("Required"),
   password: Yup.string().min(6, "Too Short!").required("Required"),
   confirmPassword: Yup.string().oneOf([Yup.ref("password"), null], "Passwords must match"),
@@ -24,6 +26,10 @@ const RegisterSchema = Yup.object().shape({
 export default function RegisterPage() {
   const dispatch = useDispatch();
   const history = useHistory();
+
+  const initialValues: RegisterFormValues = { username: "", email: "", password: "", confirmPassword: "" };
+
+  const loadingRegister = useSelector((state: RootState) => state.userReducer.loadingRegister);
 
   const onSubmit = async ({ username, email, password }: RegisterFormValues) => {
     const response: any = await dispatch(registerUser({ username, email, password }));
@@ -34,8 +40,6 @@ export default function RegisterPage() {
       history.push("/");
     }
   };
-
-  const initialValues: RegisterFormValues = { username: "", email: "", password: "", confirmPassword: "" };
 
   return (
     <div className="container mx-auto text-center">
@@ -86,10 +90,12 @@ export default function RegisterPage() {
                         <div className="text-red-500">{errors.confirmPassword}</div>
                       ) : null}
                     </div>
+
                     <button
                       type="submit"
                       className="rounded-md p-1 bg-red-500 text-white hover:bg-red-700 focus:outline-none transition ease-out duration-500 transform hover:scale-105"
                     >
+                      <SpinnerComponent loading={loadingRegister} />
                       Register
                     </button>
                   </div>

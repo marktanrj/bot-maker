@@ -21,11 +21,29 @@ export const registerUser = createAsyncThunk(
   }
 );
 
+export const signInUser = createAsyncThunk(
+  "userReducer/signInUser",
+  async (payload: { identifier: string; password: string }, { rejectWithValue }) => {
+    const endpoint = new URL("/user/signin", serverURL);
+    try {
+      const response = await axios.post(endpoint.href, payload);
+      return response.data;
+    } catch (error) {
+      let errorMessage = _.get(error, "response.data.errors[0]", "");
+      if (!errorMessage) {
+        errorMessage = _.get(error, "message", "Please try again!");
+      }
+      return rejectWithValue(errorMessage);
+    }
+  }
+);
+
 export const userSlice = createSlice({
   name: "userReducer",
   initialState: {
     user: undefined,
     loadingRegister: false,
+    loadingSignIn: false,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -37,6 +55,15 @@ export const userSlice = createSlice({
     });
     builder.addCase(registerUser.rejected, (state, action) => {
       state.loadingRegister = false;
+    });
+    builder.addCase(signInUser.pending, (state, action) => {
+      state.loadingSignIn = true;
+    });
+    builder.addCase(signInUser.fulfilled, (state, action) => {
+      state.loadingSignIn = false;
+    });
+    builder.addCase(signInUser.rejected, (state, action) => {
+      state.loadingSignIn = false;
     });
   },
 });
