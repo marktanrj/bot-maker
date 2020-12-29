@@ -1,9 +1,10 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { getConnection } from "typeorm";
 import { User } from "../../entity/User";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
-export const register = async (req: Request, res: Response) => {
+export const register = async (req: Request, res: Response): Promise<void | Response> => {
   const { username, email, password } = req.body;
 
   const repository = await getConnection().getRepository(User);
@@ -12,8 +13,6 @@ export const register = async (req: Request, res: Response) => {
     .createQueryBuilder("user")
     .where("user.username = :username OR user.email = :email", { username, email })
     .getOne();
-
-  console.log(existingUserWithFields);
 
   if (existingUserWithFields) {
     if (existingUserWithFields.username === username) {
@@ -41,4 +40,36 @@ export const register = async (req: Request, res: Response) => {
       errors: [err.message],
     });
   }
+};
+
+export const signIn = async (req: Request, res: Response, next: NextFunction): Promise<void | Response> => {
+  const { identifier, password } = req.body;
+
+  const repository = await getConnection().getRepository(User);
+
+  const user = await repository
+    .createQueryBuilder("user")
+    .where("user.username = :username OR user.email = :email", { username: identifier, email: identifier })
+    .getOne();
+
+  if (!user) {
+    return res.status(409).json({
+      errors: ["Username or email is incorrect"],
+    });
+  }
+
+  const passwordMatch = await bcrypt.compare(password, user.password);
+
+  if (!passwordMatch) {
+    return res.status(400).json({
+      errors: ["Either identifier or password incorrect"],
+    });
+  }
+
+  const userObject = { username: user.username, email: user.email };
+  const token = jwt.sign(userObject, "10", { expiresIn: "7d" });
+  const userObjectWithToken = { ...userObject, token };
+  req.body.user = userObjectWithToken;
+
+  return res.status(200).json({ user: userObjectWithToken });
 };

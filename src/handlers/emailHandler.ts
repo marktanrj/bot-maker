@@ -7,7 +7,7 @@ export const sendVerificationEmail = async () => {
     sendmail(
       {
         from: "no-reply@marktan.me",
-        to: "marktanrj@gmail.com",
+        to: "",
         subject: "test",
         html: "<h1>hellow</h1>",
       },
