@@ -38,7 +38,7 @@ export default function SignInPage() {
 
   return (
     <div className="container mx-auto text-center">
-      <div className="min-h-screen flex items-center justify-center pb-20">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="grid grid-cols-1 gap-4 w-full lg:w-2/6">
           <h2 className="text-2xl font-bold">Bot Maker</h2>
           <div className="bg-white text-left px-10 py-5 rounded-md">
