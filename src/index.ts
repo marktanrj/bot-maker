@@ -4,11 +4,11 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import { createConnection, getConnectionManager } from "typeorm";
 import _ from "lodash";
-import { logger } from "./utils/loggerWrapper";
+import logger from "./utils/loggerWrapper";
 import helmet from "helmet";
 
 import userRoute from "./components/user/userRoute";
-import errorHandler from "./middleware/errorHandler";
+import errorHandler from "./handlers/errorHandler";
 
 const PORT = 4000;
 
