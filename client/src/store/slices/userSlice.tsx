@@ -61,6 +61,7 @@ export const userSlice = createSlice({
     });
     builder.addCase(signInUser.fulfilled, (state, action) => {
       state.loadingSignIn = false;
+      state.user = action.payload.user;
     });
     builder.addCase(signInUser.rejected, (state, action) => {
       state.loadingSignIn = false;
