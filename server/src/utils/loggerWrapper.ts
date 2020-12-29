@@ -1,6 +1,6 @@
 import winston from "winston";
 
-export const logger = winston.createLogger({
+export default winston.createLogger({
   level: "verbose",
   format: winston.format.combine(winston.format.colorize(), winston.format.json()),
   defaultMeta: { service: "user-service" },

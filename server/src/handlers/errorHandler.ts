@@ -1,4 +1,4 @@
-import { logger } from "../utils/loggerWrapper";
+import logger from "../utils/loggerWrapper";
 import express, { Request, Response, NextFunction } from "express";
 import { ValidatorWrapperError } from "../utils/validatorWrapper";
 
