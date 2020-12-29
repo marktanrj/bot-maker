@@ -56,7 +56,7 @@ export const signIn = async (req: Request, res: Response, next: NextFunction): P
 
   if (!user) {
     return res.status(409).json({
-      errors: ["Username or email is incorrect"],
+      errors: ["Either identifier or password incorrect"],
     });
   }
 
