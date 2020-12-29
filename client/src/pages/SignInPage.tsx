@@ -4,17 +4,17 @@ import * as Yup from "yup";
 import { Link } from "react-router-dom";
 
 interface SignInFormValues {
-  email: string;
+  identifier: string;
   password: string;
 }
 
 const SignInSchema = Yup.object().shape({
-  email: Yup.string().required("Required"),
+  identifier: Yup.string().required("Required"),
   password: Yup.string().required("Required"),
 });
 
 export default function SignInPage() {
-  const initialValues: SignInFormValues = { email: "", password: "" };
+  const initialValues: SignInFormValues = { identifier: "", password: "" };
 
   return (
     <div className="container mx-auto text-center">
@@ -46,9 +46,9 @@ export default function SignInPage() {
                       <h5 className="text-xl">Sign In</h5>
                     </div>
                     <div>
-                      <p>Email Address</p>
-                      <Field id="email" name="email" required className="w-full p-1 border border-gray-500 rounded" />
-                      {errors.email && touched.email ? <div className="text-red-500">{errors.email}</div> : null}
+                      <p>Email Address or Username</p>
+                      <Field id="identifier" name="identifier" required className="w-full p-1 border border-gray-500 rounded" />
+                      {errors.identifier && touched.identifier ? <div className="text-red-500">{errors.identifier}</div> : null}
                     </div>
                     <div>
                       <p>Password</p>

@@ -1,22 +1,41 @@
 import React from "react";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+import { useDispatch } from "react-redux";
+
+import { registerUser } from "../store/slices/userSlice";
+import { setToast } from "../store/slices/toastSlice";
 
 interface RegisterFormValues {
+  username: string;
   email: string;
   password: string;
   confirmPassword: string;
 }
 
 const RegisterSchema = Yup.object().shape({
+  username: Yup.string().min(6, "Too Short!").required("Required"),
   email: Yup.string().email("Invalid email").required("Required"),
   password: Yup.string().min(6, "Too Short!").required("Required"),
   confirmPassword: Yup.string().oneOf([Yup.ref("password"), null], "Passwords must match"),
 });
 
 export default function RegisterPage() {
-  const initialValues: RegisterFormValues = { email: "", password: "", confirmPassword: "" };
+  const dispatch = useDispatch();
+  const history = useHistory();
+
+  const onSubmit = async ({ username, email, password }: RegisterFormValues) => {
+    const response: any = await dispatch(registerUser({ username, email, password }));
+    if (response.error) {
+      dispatch(setToast({ type: "error", message: response.payload }));
+    } else {
+      dispatch(setToast({ type: "success", message: "Account created" }));
+      history.push("/");
+    }
+  };
+
+  const initialValues: RegisterFormValues = { username: "", email: "", password: "", confirmPassword: "" };
 
   return (
     <div className="container mx-auto text-center">
@@ -24,17 +43,9 @@ export default function RegisterPage() {
         <div className="grid grid-cols-1 gap-4 w-full lg:w-2/6">
           <h2 className="text-2xl font-bold">Bot Maker</h2>
           <div className="bg-white text-left px-10 py-5 rounded-md">
-            <Formik
-              initialValues={initialValues}
-              validationSchema={RegisterSchema}
-              onSubmit={(values, actions) => {
-                console.log({ values, actions });
-                alert(JSON.stringify(values, null, 2));
-                actions.setSubmitting(false);
-              }}
-            >
-              {({ errors, touched }) => (
-                <Form>
+            <Formik initialValues={initialValues} validationSchema={RegisterSchema} onSubmit={onSubmit}>
+              {({ errors, touched, handleSubmit }) => (
+                <Form onSubmit={handleSubmit}>
                   <div className="grid gap-3">
                     <div className="text-center flex justify-center mr-5">
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="30px">
@@ -48,23 +59,37 @@ export default function RegisterPage() {
                       <h5 className="text-xl">Register</h5>
                     </div>
                     <div>
+                      <p>Username</p>
+                      <Field id="username" name="username" required className="w-full p-1 border border-gray-500 rounded" />
+                      {errors.username && touched.username ? <div className="text-red-500">{errors.username}</div> : null}
+                    </div>
+                    <div>
                       <p>Email Address</p>
                       <Field id="email" name="email" required className="w-full p-1 border border-gray-500 rounded" />
                       {errors.email && touched.email ? <div className="text-red-500">{errors.email}</div> : null}
                     </div>
                     <div>
                       <p>Password</p>
-                      <Field id="password" name="password" required className="w-full p-1 border border-gray-500 rounded" />
+                      <Field id="password" name="password" type="password" required className="w-full p-1 border border-gray-500 rounded" />
                       {errors.password && touched.password ? <div className="text-red-500">{errors.password}</div> : null}
                     </div>
                     <div>
                       <p>Confirm Password</p>
-                      <Field id="confirmPassword" name="confirmPassword" required className="w-full p-1 border border-gray-500 rounded" />
+                      <Field
+                        id="confirmPassword"
+                        name="confirmPassword"
+                        type="password"
+                        required
+                        className="w-full p-1 border border-gray-500 rounded"
+                      />
                       {errors.confirmPassword && touched.confirmPassword ? (
                         <div className="text-red-500">{errors.confirmPassword}</div>
                       ) : null}
                     </div>
-                    <button className="rounded-md p-1 bg-red-500 text-white hover:bg-red-700 focus:outline-none transition ease-out duration-500 transform hover:scale-105">
+                    <button
+                      type="submit"
+                      className="rounded-md p-1 bg-red-500 text-white hover:bg-red-700 focus:outline-none transition ease-out duration-500 transform hover:scale-105"
+                    >
                       Register
                     </button>
                   </div>

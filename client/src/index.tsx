@@ -4,6 +4,7 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import "./styles/tailwind.output.css";
+import "react-toastify/dist/ReactToastify.min.css";
 
 // redux
 import { Provider } from "react-redux";
