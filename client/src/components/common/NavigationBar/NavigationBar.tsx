@@ -1,6 +1,8 @@
 import React, { ReactElement, useState } from "react";
+import { useDispatch } from "react-redux";
 import { Link as RouterLink, useHistory } from "react-router-dom";
 
+import { signOutUser } from "../../../store/slices/userSlice";
 import "./NavigationBar.css";
 
 interface Props {}
@@ -11,11 +13,18 @@ const selected =
 
 export default function NavigationBar({}: Props): ReactElement {
   const history = useHistory();
+  const dispatch = useDispatch();
+
   const [selectedRoute, setSelectedRoute] = useState("/dashboard");
 
   const handleSelectMenu = (route: string) => {
     setSelectedRoute(route);
     history.push(route);
+  };
+
+  const handleSignOut = () => {
+    dispatch(signOutUser());
+    history.push("/signin");
   };
 
   return (
@@ -71,15 +80,15 @@ export default function NavigationBar({}: Props): ReactElement {
                             <span>Account</span>
                           </span>
                         </a>
-                        <a
-                          href="#"
-                          className="block block px-4 py-2 text-md text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600"
+                        <div
+                          className="block block px-4 py-2 text-md text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 cursor-pointer"
                           role="menuitem"
+                          onClick={handleSignOut}
                         >
                           <span className="flex flex-col">
                             <span>Sign Out</span>
                           </span>
-                        </a>
+                        </div>
                       </div>
                     </div>
                   </div>

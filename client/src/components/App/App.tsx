@@ -4,6 +4,8 @@ import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-d
 import PrivateRoute from "../Common/PrivateRoute";
 import ToastComponent from "../Common/ToastComponent";
 import isLoggedInCheck from "../../utils/isLoggedInCheck";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store/store";
 
 import NavigationBar from "../Common/NavigationBar/NavigationBar";
 const SignInPage = React.lazy(() => import("../SignInPage"));
@@ -13,6 +15,8 @@ const DashboardPage = React.lazy(() => import("../DashboardPage"));
 const BuilderPage = React.lazy(() => import("../BuilderPage"));
 
 function App() {
+  const user = useSelector((state: RootState) => state.userReducer.user);
+
   return (
     <div className="bg-gray-200 min-h-screen">
       <ToastComponent />

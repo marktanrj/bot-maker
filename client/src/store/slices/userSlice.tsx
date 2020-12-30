@@ -45,7 +45,12 @@ export const userSlice = createSlice({
     loadingRegister: false,
     loadingSignIn: false,
   },
-  reducers: {},
+  reducers: {
+    signOutUser: (state) => {
+      state.user = undefined;
+      localStorage.removeItem("user");
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(registerUser.pending, (state, action) => {
       state.loadingRegister = true;
@@ -62,6 +67,7 @@ export const userSlice = createSlice({
     builder.addCase(signInUser.fulfilled, (state, action) => {
       state.loadingSignIn = false;
       state.user = action.payload.user;
+      localStorage.setItem("user", JSON.stringify(action.payload.user));
     });
     builder.addCase(signInUser.rejected, (state, action) => {
       state.loadingSignIn = false;
@@ -69,6 +75,6 @@ export const userSlice = createSlice({
   },
 });
 
-export const {} = userSlice.actions;
+export const { signOutUser } = userSlice.actions;
 
 export default userSlice.reducer;
