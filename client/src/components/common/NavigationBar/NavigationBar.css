@@ -1,0 +1,7 @@
+.narbar-profile-menu {
+  display: none;
+}
+
+.narbar-profile:hover .narbar-profile-menu {
+  display: block;
+}

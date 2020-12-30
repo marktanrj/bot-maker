@@ -4,10 +4,10 @@ import * as Yup from "yup";
 import { Link, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
-import { registerUser } from "../store/slices/userSlice";
-import { setToast } from "../store/slices/toastSlice";
-import { RootState } from "../store/store";
-import SpinnerComponent from "../components/common/SpinnerComponent";
+import { registerUser } from "../../store/slices/userSlice";
+import { setToast } from "../../store/slices/toastSlice";
+import { RootState } from "../../store/store";
+import SpinnerComponent from "../Common/SpinnerComponent";
 
 interface RegisterFormValues {
   username: string;

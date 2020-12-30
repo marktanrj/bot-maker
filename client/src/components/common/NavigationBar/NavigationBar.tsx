@@ -1,8 +1,23 @@
-import React, { ReactElement } from "react";
+import React, { ReactElement, useState } from "react";
+import { Link as RouterLink, useHistory } from "react-router-dom";
+
+import "./NavigationBar.css";
 
 interface Props {}
 
+const notSelected = "text-gray-300  hover:text-gray-800 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium cursor-pointer";
+const selected =
+  "text-gray-800 dark:text-white  hover:text-gray-800 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium cursor-pointer";
+
 export default function NavigationBar({}: Props): ReactElement {
+  const history = useHistory();
+  const [selectedRoute, setSelectedRoute] = useState("/dashboard");
+
+  const handleSelectMenu = (route: string) => {
+    setSelectedRoute(route);
+    history.push(route);
+  };
+
   return (
     <div>
       <nav className="bg-white dark:bg-gray-800  shadow ">
@@ -12,25 +27,19 @@ export default function NavigationBar({}: Props): ReactElement {
               <h2 className="text-2xl font-bold">Bot Maker</h2>
               <div className="hidden md:block">
                 <div className="ml-10 flex items-baseline space-x-4">
-                  <a
-                    className="text-gray-300  hover:text-gray-800 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-                    href="/#"
-                  >
+                  <div onClick={() => handleSelectMenu("/dashboard")} className={selectedRoute === "/dashboard" ? selected : notSelected}>
                     Dashboard
-                  </a>
-                  <a
-                    className="text-gray-800 dark:text-white  hover:text-gray-800 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-                    href="/#"
-                  >
-                    Gallery
-                  </a>
+                  </div>
+                  <div onClick={() => handleSelectMenu("/builder")} className={selectedRoute === "/builder" ? selected : notSelected}>
+                    Builder
+                  </div>
                 </div>
               </div>
             </div>
             <div className="block">
               <div className="ml-4 flex items-center md:ml-6">
                 <div className="ml-3 relative">
-                  <div className="relative inline-block text-left">
+                  <div className="narbar-profile relative inline-block text-left">
                     <div>
                       <button
                         type="button"
@@ -51,17 +60,8 @@ export default function NavigationBar({}: Props): ReactElement {
                         </svg>
                       </button>
                     </div>
-                    <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5">
+                    <div className="narbar-profile-menu origin-top-right absolute right-0 mt-0 w-56 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5">
                       <div className="py-1 " role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                        <a
-                          href="#"
-                          className="block block px-4 py-2 text-md text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600"
-                          role="menuitem"
-                        >
-                          <span className="flex flex-col">
-                            <span>Settings</span>
-                          </span>
-                        </a>
                         <a
                           href="#"
                           className="block block px-4 py-2 text-md text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600"
@@ -77,7 +77,7 @@ export default function NavigationBar({}: Props): ReactElement {
                           role="menuitem"
                         >
                           <span className="flex flex-col">
-                            <span>Logout</span>
+                            <span>Sign Out</span>
                           </span>
                         </a>
                       </div>
@@ -112,18 +112,6 @@ export default function NavigationBar({}: Props): ReactElement {
             </a>
             <a className="text-gray-800 dark:text-white block px-3 py-2 rounded-md text-base font-medium" href="/#">
               Gallery
-            </a>
-            <a
-              className="text-gray-300 hover:text-gray-800 dark:hover:text-white block px-3 py-2 rounded-md text-base font-medium"
-              href="/#"
-            >
-              Content
-            </a>
-            <a
-              className="text-gray-300 hover:text-gray-800 dark:hover:text-white block px-3 py-2 rounded-md text-base font-medium"
-              href="/#"
-            >
-              Contact
             </a>
           </div>
         </div>
