@@ -1,37 +1,55 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { v4 as uuidv4 } from "uuid";
 
-const pageValuesInitState = [
+interface contentType {
+  type: "text" | "command";
+  settings: any;
+}
+
+interface builderDataType {
+  id: string;
+  name: string;
+  content: Array<contentType>;
+}
+
+const builderDataInitState: builderDataType[] = [
   {
     id: "main",
     name: "Main",
-    content: "Main",
+    content: [
+      {
+        type: "text",
+        settings: {
+          text: "Welcome to bot!",
+        },
+      },
+    ],
   },
   {
     id: "2",
     name: "Test",
-    content: "Test",
+    content: [],
   },
   {
     id: "3",
     name: "Test2",
-    content: "Test2",
+    content: [],
   },
 ];
 
 export const builderSlice = createSlice({
   name: "builderReducer",
   initialState: {
-    pageValues: pageValuesInitState,
+    builderData: builderDataInitState,
     selectedPageId: "main",
   },
   reducers: {
-    addPage: (state, action: { payload: { name: string; content: string }; [x: string]: any }) => {
+    addPage: (state, action: { payload: { name: string; content: Array<any> }; [x: string]: any }) => {
       const item = action.payload;
-      state.pageValues.push({ id: uuidv4(), ...item });
+      state.builderData.push({ id: uuidv4(), ...item });
     },
     updateAllPage: (state, action) => {
-      state.pageValues = action.payload;
+      state.builderData = action.payload;
     },
     updateSelectedPageId: (state, action) => {
       state.selectedPageId = action.payload;

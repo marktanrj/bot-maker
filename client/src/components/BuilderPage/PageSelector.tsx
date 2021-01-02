@@ -9,15 +9,15 @@ import { addPage, updateAllPage, updateSelectedPageId } from "../../store/slices
 export default function PageSelector(): ReactElement {
   const dispatch = useDispatch();
 
-  const pageValues = useSelector((state: RootState) => state.builderReducer.pageValues);
+  const builderData = useSelector((state: RootState) => state.builderReducer.builderData);
 
-  const [pages, setPages] = useState(pageValues);
+  const [pages, setPages] = useState(builderData);
 
   useEffect(() => {
-    if (pageValues.length > 0) {
-      setPages(_.cloneDeep(pageValues));
+    if (builderData.length > 0) {
+      setPages(_.cloneDeep(builderData));
     }
-  }, [pageValues]);
+  }, [builderData]);
 
   function handleOnDragEnd(result: any) {
     if (!result.destination) return;
@@ -38,7 +38,7 @@ export default function PageSelector(): ReactElement {
   };
 
   const onPageAdd = () => {
-    dispatch(addPage({ name: `Untitled`, content: "" }));
+    dispatch(addPage({ name: `Untitled`, content: [] }));
   };
 
   const [isEditing, setIsEditing] = useState<string | null>(null);
@@ -60,6 +60,14 @@ export default function PageSelector(): ReactElement {
 
     setIsEditing(null);
     dispatch(updateAllPage(items));
+  };
+
+  const onPageDeleteClick = (pageId: string) => {
+    const items = _.cloneDeep(pages);
+    const newItems = items.filter((item) => item.id !== pageId);
+    dispatch(updateAllPage(newItems));
+    setSelectedPageId("main");
+    dispatch(updateSelectedPageId("main"));
   };
 
   return (
@@ -84,24 +92,54 @@ export default function PageSelector(): ReactElement {
                             {isEditing === null && (
                               <div className="grid grid-cols-5">
                                 <p className={"col-span-4"}>{name}</p>
-                                <button
-                                  className="col-span-1 border-2 border-gray-700 rounded-md"
-                                  onClick={() => onPageEditClick(id, name)}
-                                >
-                                  Edit
-                                </button>
+                                <div className="col-span-1 flex">
+                                  <button onClick={() => onPageEditClick(id, name)}>
+                                    <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                      <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                                    </svg>
+                                  </button>
+                                  {id === "main" ? (
+                                    <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                      <path
+                                        fillRule="evenodd"
+                                        d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+                                        clipRule="evenodd"
+                                      />
+                                    </svg>
+                                  ) : (
+                                    <button onClick={() => onPageDeleteClick(id)}>
+                                      <svg
+                                        width="20"
+                                        height="20"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                        className="self-center"
+                                      >
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                                      </svg>
+                                    </button>
+                                  )}
+                                </div>
                               </div>
                             )}
                             {isEditing === id && (
-                              <div className="grid grid-cols-5">
+                              <div className="grid grid-cols-6 gap-1">
                                 <input
-                                  className="col-span-4"
+                                  className="col-span-5"
                                   type="text"
                                   value={editingValue}
                                   onChange={(e) => setEditingValue(e.target.value)}
                                 />
-                                <button className="col-span-1 border-2 border-gray-700 rounded-md" onClick={() => onPageSaveClick(id)}>
-                                  Save
+                                <button className="col-span-1" onClick={() => onPageSaveClick(id)}>
+                                  <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                    <path
+                                      fillRule="evenodd"
+                                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                      clipRule="evenodd"
+                                    />
+                                  </svg>
                                 </button>
                               </div>
                             )}
@@ -121,9 +159,11 @@ export default function PageSelector(): ReactElement {
           )}
         </Droppable>
       </DragDropContext>
-      <button className="rounded-md bg-gray-500 p-2 m-1" onClick={() => onPageAdd()}>
-        Add Page
-      </button>
+      <div className="p-1">
+        <button className="rounded-md border-2 border-gray-900 hover:bg-gray-400 w-full" onClick={() => onPageAdd()}>
+          Add Page
+        </button>
+      </div>
     </React.Fragment>
   );
 }
