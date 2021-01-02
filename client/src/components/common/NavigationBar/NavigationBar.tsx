@@ -28,7 +28,7 @@ export default function NavigationBar({}: Props): ReactElement {
   };
 
   return (
-    <div>
+    <div className="fixed w-screen z-40">
       <nav className="bg-white dark:bg-gray-800  shadow ">
         <div className="max-w-7xl mx-auto px-8">
           <div className="flex items-center justify-between h-16">
@@ -69,7 +69,7 @@ export default function NavigationBar({}: Props): ReactElement {
                         </svg>
                       </button>
                     </div>
-                    <div className="narbar-profile-menu origin-top-right absolute right-0 mt-0 w-56 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5">
+                    <div className="narbar-profile-menu origin-top-right absolute right-0 mt-0 w-56 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 z-50">
                       <div className="py-1 " role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
                         <a
                           href="#"

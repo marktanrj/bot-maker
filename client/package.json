@@ -14,10 +14,10 @@
     "@types/react-redux": "^7.1.11",
     "@types/react-router-dom": "^5.1.6",
     "axios": "^0.21.1",
-    "beautiful-react-diagrams": "^0.4.0",
     "formik": "^2.2.5",
     "lodash": "^4.17.20",
     "react": "^17.0.1",
+    "react-beautiful-dnd": "^13.0.0",
     "react-dom": "^17.0.1",
     "react-redux": "^7.2.2",
     "react-router-dom": "^5.2.0",
@@ -27,6 +27,7 @@
     "redux-thunk": "^2.3.0",
     "tailwindcss": "^1.9.6",
     "typescript": "^4.0.3",
+    "uuid": "^8.3.2",
     "web-vitals": "^0.2.4",
     "yup": "^0.32.3"
   },
@@ -56,5 +57,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/react-beautiful-dnd": "^13.0.0",
+    "@types/uuid": "^8.3.0"
   }
 }
