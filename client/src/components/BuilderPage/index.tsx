@@ -3,6 +3,7 @@ import _ from "lodash";
 
 import PageSelector from "./PageSelector";
 import LayoutBuilder from "./LayoutBuilder";
+import PreviewPanel from "./PreviewPanel";
 
 export default function BuilderPage(): ReactElement {
   return (
@@ -14,7 +15,9 @@ export default function BuilderPage(): ReactElement {
         <div className="col-span-5 p-2 rounded-md bg-gray-100 shadow-md">
           <LayoutBuilder />
         </div>
-        <div className="col-span-4 p-2 rounded-md bg-gray-100 shadow-md">Settings</div>
+        <div className="col-span-4 p-2 rounded-md bg-gray-100 shadow-md">
+          <PreviewPanel />
+        </div>
       </div>
     </div>
   );

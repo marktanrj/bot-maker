@@ -38,7 +38,17 @@ export default function PageSelector(): ReactElement {
   };
 
   const onPageAdd = () => {
-    dispatch(addPage({ name: `Untitled`, content: [] }));
+    dispatch(
+      addPage({
+        name: `Untitled`,
+        content: {
+          type: "text",
+          settings: {
+            text: "",
+          },
+        },
+      })
+    );
   };
 
   const [isEditing, setIsEditing] = useState<string | null>(null);
@@ -72,6 +82,7 @@ export default function PageSelector(): ReactElement {
 
   return (
     <React.Fragment>
+      <h3 className="text-xl p-1">Pages</h3>
       <DragDropContext onDragEnd={handleOnDragEnd}>
         <Droppable droppableId="pages">
           {(provided) => (

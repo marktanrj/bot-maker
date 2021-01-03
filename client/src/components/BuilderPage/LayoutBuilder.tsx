@@ -1,17 +1,10 @@
-import React, { ReactElement, ReactNode, useEffect, useState } from "react";
+import React, { ReactElement, ReactNode, useEffect, useState, useCallback, MouseEventHandler } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import _ from "lodash";
 
 import { updateAllPage } from "../../store/slices/builderSlice";
 import { RootState } from "../../store/store";
-import TextBlock from "./ContentBlocks/TextBlock";
-
-function BlockSelector({ contentItem }: { contentItem: { [x: string]: any } }): ReactElement {
-  if (contentItem.type === "text") {
-    return <TextBlock data={contentItem} />;
-  }
-  return <React.Fragment />;
-}
+import ContentBlockSettingsSelector, { blockOptionValues, defaultBlockValues } from "./ContentBlockSettings";
 
 export default function LayoutBuilder(): ReactElement {
   const dispatch = useDispatch();
@@ -19,34 +12,16 @@ export default function LayoutBuilder(): ReactElement {
   const selectedPageId = useSelector((state: RootState) => state.builderReducer.selectedPageId);
   const builderData = useSelector((state: RootState) => state.builderReducer.builderData);
 
-  const [botContent, setBotContent] = useState<any>("");
+  const [selectedContentType, setSelectedContentType] = useState(blockOptionValues[0].value);
 
-  useEffect(() => {
-    if (builderData && selectedPageId) {
-      const content = builderData.filter((item) => item.id === selectedPageId)[0];
-      setBotContent(content);
-      console.log(content);
-    }
-  }, [builderData, selectedPageId]);
+  const onContentTypeChange = (e: any) => {
+    const contentType = e.target.value;
+    setSelectedContentType(contentType);
 
-  const [selectedContentType, setSelectedContentType] = useState("text");
-  const onContentTypeInsert = () => {
     const items = _.cloneDeep(builderData);
     items.forEach((item) => {
       if (item.id === selectedPageId) {
-        if (selectedContentType === "text") {
-          item.content.push({
-            type: "text",
-            settings: {
-              text: "Text",
-            },
-          });
-        } else if (selectedContentType === "command") {
-          item.content.push({
-            type: "command",
-            settings: {},
-          });
-        }
+        item.content = defaultBlockValues[contentType];
       }
       return item;
     });
@@ -55,28 +30,34 @@ export default function LayoutBuilder(): ReactElement {
   };
 
   return (
-    <React.Fragment>
-      <div>Invokers</div>
-      <hr className="my-3" />
-      <div>Bot Content</div>
-      <div className="rounded-md bg-indigo-200 p-2">
-        {botContent &&
-          botContent.content &&
-          botContent.content.length > 0 &&
-          botContent.content.map((contentItem: any, index: number) => {
-            return <BlockSelector contentItem={contentItem} key={index} />;
+    <div className="grid">
+      <h3 className="text-xl p-1">Settings</h3>
+
+      <p className="place-self-center font-bold">Invokers</p>
+      <hr className="my-3 border-4" />
+
+      <p className="place-self-center font-bold">Message</p>
+      <div>
+        <p>Content Type</p>
+        <select className="w-full rounded-md p-2 " onChange={onContentTypeChange}>
+          {blockOptionValues.map((item) => {
+            return (
+              <option value={item.value} key={item.value}>
+                {item.name}
+              </option>
+            );
           })}
-        <div className="grid grid-cols-3">
-          <select className="col-span-2 rounded-md p-1" onChange={(e) => setSelectedContentType(e.target.value)}>
-            <option value="text">Text</option>
-            <option value="command">Command</option>
-          </select>
-          <button className="col-span-1 rounded-md p-1 mx-2 bg-red-300 hover:bg-red-700" onClick={() => onContentTypeInsert()}>
-            Insert
-          </button>
+        </select>
+        <hr className="my-3" />
+        <div className="p-1">
+          <ContentBlockSettingsSelector contentType={selectedContentType} />
         </div>
       </div>
+
+      <hr className="my-3 border-4" />
+
+      <p className="place-self-center font-bold">Button(s)</p>
       <button className="rounded-md p-1 my-1 bg-purple-300 hover:bg-red-700 w-full">Add Button</button>
-    </React.Fragment>
+    </div>
   );
 }
