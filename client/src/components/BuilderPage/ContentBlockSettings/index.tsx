@@ -37,6 +37,7 @@ export const defaultBlockValues: any = {
     type: "photo",
     settings: {
       url: "",
+      caption: "",
     },
   },
 };

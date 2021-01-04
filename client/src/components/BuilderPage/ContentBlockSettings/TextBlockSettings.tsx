@@ -5,9 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { saveTextBlock } from "../../../store/slices/builderSlice";
 import { RootState } from "../../../store/store";
 
-interface Props {}
-
-export default function TextBlockSettings({}: Props): ReactElement {
+export default function TextBlockSettings(): ReactElement {
   const dispatch = useDispatch();
 
   const [textInput, setTextInput] = useState("");
@@ -24,7 +22,6 @@ export default function TextBlockSettings({}: Props): ReactElement {
 
   const debouncedSave = useCallback(
     _.debounce(({ textareaInput }) => {
-      console.log("savetext");
       dispatch(
         saveTextBlock({
           type: "text",

@@ -25,7 +25,7 @@ export default function PreviewPanel(): ReactElement {
           <div className="place-self-center">B</div>
         </div>
         <div className="col-span-7">
-          <div className="bg-blue-600 text-white rounded-t-lg rounded-r-lg h-32 p-3">
+          <div className="bg-blue-600 text-white rounded-t-lg rounded-r-lg min-h-32">
             <ContentBlockSelector node={node} />
           </div>
         </div>

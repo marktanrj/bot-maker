@@ -14,6 +14,13 @@ export default function LayoutBuilder(): ReactElement {
 
   const [selectedContentType, setSelectedContentType] = useState(blockOptionValues[0].value);
 
+  useEffect(() => {
+    if (builderData && selectedPageId) {
+      const data = builderData.filter((item) => item.id === selectedPageId)[0];
+      setSelectedContentType(data.content.type);
+    }
+  }, [selectedPageId]);
+
   const onContentTypeChange = (e: any) => {
     const contentType = e.target.value;
     setSelectedContentType(contentType);
@@ -39,7 +46,7 @@ export default function LayoutBuilder(): ReactElement {
       <p className="place-self-center font-bold">Message</p>
       <div>
         <p>Content Type</p>
-        <select className="w-full rounded-md p-2 " onChange={onContentTypeChange}>
+        <select className="w-full rounded-md p-2" value={selectedContentType} onChange={onContentTypeChange}>
           {blockOptionValues.map((item) => {
             return (
               <option value={item.value} key={item.value}>
