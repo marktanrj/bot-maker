@@ -2,7 +2,7 @@ import React, { ReactElement, useCallback, useEffect, useState } from "react";
 import _ from "lodash";
 import { useDispatch, useSelector } from "react-redux";
 
-import { saveTextBlock } from "../../../store/slices/builderSlice";
+import { saveBlock } from "../../../store/slices/builderSlice";
 import { RootState } from "../../../store/store";
 
 export default function PhotoBlockSettings(): ReactElement {
@@ -26,7 +26,7 @@ export default function PhotoBlockSettings(): ReactElement {
     _.debounce(({ url, caption }) => {
       console.log({ url, caption, urlInput, captionInput });
       dispatch(
-        saveTextBlock({
+        saveBlock({
           type: "photo",
           settings: {
             url: url || urlInput,

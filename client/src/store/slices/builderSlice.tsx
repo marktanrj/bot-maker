@@ -62,13 +62,13 @@ export const builderSlice = createSlice({
     updateSelectedPageId: (state, action) => {
       state.selectedPageId = action.payload;
     },
-    saveTextBlock: (state, action) => {
+    saveBlock: (state, action) => {
       const itemToChange = state.builderData.filter((item) => item.id === state.selectedPageId)[0];
       itemToChange.content = action.payload;
     },
   },
 });
 
-export const { addPage, updateAllPage, updateSelectedPageId, saveTextBlock } = builderSlice.actions;
+export const { addPage, updateAllPage, updateSelectedPageId, saveBlock } = builderSlice.actions;
 
 export default builderSlice.reducer;

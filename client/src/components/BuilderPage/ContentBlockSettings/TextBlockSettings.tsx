@@ -2,7 +2,7 @@ import React, { ReactElement, useCallback, useEffect, useState } from "react";
 import _ from "lodash";
 import { useDispatch, useSelector } from "react-redux";
 
-import { saveTextBlock } from "../../../store/slices/builderSlice";
+import { saveBlock } from "../../../store/slices/builderSlice";
 import { RootState } from "../../../store/store";
 
 export default function TextBlockSettings(): ReactElement {
@@ -23,7 +23,7 @@ export default function TextBlockSettings(): ReactElement {
   const debouncedSave = useCallback(
     _.debounce(({ textareaInput }) => {
       dispatch(
-        saveTextBlock({
+        saveBlock({
           type: "text",
           settings: {
             text: textareaInput,
