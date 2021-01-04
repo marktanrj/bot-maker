@@ -13,8 +13,10 @@ interface Invoker {
 
 interface Button {
   id: string;
+  name: string;
   type: "website" | "page";
-  input?: string;
+  pageId?: string;
+  url?: string;
 }
 
 interface NodeType {
@@ -44,8 +46,9 @@ const builderDataInitState: NodeType[] = [
     buttons: [
       {
         id: "1",
+        name: "site",
         type: "website",
-        input: "website",
+        url: "www.google.com",
       },
     ],
   },
@@ -94,7 +97,7 @@ export const builderSlice = createSlice({
         },
         invokers: [],
         buttons: [],
-      } as NodeType);
+      });
     },
     updateAllPage: (state, action) => {
       state.builderData = action.payload;
@@ -116,7 +119,7 @@ export const builderSlice = createSlice({
     },
     addButton: (state) => {
       const itemToChange = state.builderData.filter((item) => item.id === state.selectedPageId)[0];
-      itemToChange.buttons.push({ id: uuidv4(), type: "website", input: "" } as Button);
+      itemToChange.buttons.push({ id: uuidv4(), name: "", type: "website", url: "" });
     },
   },
 });

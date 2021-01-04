@@ -2,6 +2,7 @@ import React, { ReactElement, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 import { RootState } from "../../../store/store";
+import Buttons from "./Buttons";
 import ContentBlockSelector from "./ContentBlocks";
 
 export default function PreviewPanel(): ReactElement {
@@ -28,6 +29,7 @@ export default function PreviewPanel(): ReactElement {
           <div className="bg-blue-600 text-white rounded-t-lg rounded-r-lg min-h-32">
             <ContentBlockSelector node={node} />
           </div>
+          <Buttons node={node} />
         </div>
       </div>
     </div>

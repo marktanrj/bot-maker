@@ -56,13 +56,13 @@ export default function ButtonSettings({}: Props): ReactElement {
     dispatch(addButton());
   };
 
-  const onInputTextChange = (newValue: string, id: string) => {
+  const onInputTextChange = (valueObj: { name?: string; url?: string; pageId?: string }, id: string) => {
     let tempButtons = _.cloneDeep(buttons);
     tempButtons = tempButtons.map((item: any) => {
       if (item.id === id) {
         item = {
           ...item,
-          input: newValue,
+          ...valueObj,
         };
       }
       return item;
@@ -76,6 +76,14 @@ export default function ButtonSettings({}: Props): ReactElement {
     dispatch(saveBlockButton(items));
   };
 
+  const isUrlValid = (url: string): boolean => {
+    const urlRegex = new RegExp(
+      /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+(:[0-9]+)?|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/
+    );
+    const result = urlRegex.test(url);
+    return result;
+  };
+
   return (
     <React.Fragment>
       <p className="place-self-center font-bold">Inline Button(s)</p>
@@ -84,7 +92,7 @@ export default function ButtonSettings({}: Props): ReactElement {
           {(provided) => (
             <ul {...provided.droppableProps} ref={provided.innerRef}>
               {buttons &&
-                buttons.map((buttonData: { id: string; type: string; input: string }, index: number) => {
+                buttons.map((buttonData: { id: string; name: string; type: string; pageId: string; url?: string }, index: number) => {
                   return (
                     <Draggable key={buttonData.id} draggableId={buttonData.id} index={index}>
                       {(provided) => (
@@ -94,7 +102,7 @@ export default function ButtonSettings({}: Props): ReactElement {
                           {...provided.dragHandleProps}
                           className={`bg-purple-300 m-1 rounded-md p-2`}
                         >
-                          <div className="grid grid-cols-12 gap-2">
+                          <div className="grid grid-cols-12 grid-rows-2 gap-2">
                             <select
                               value={buttonData.type}
                               onChange={(e) => onSelectTypeChange(e.target.value, buttonData.id)}
@@ -109,30 +117,14 @@ export default function ButtonSettings({}: Props): ReactElement {
                                   );
                                 })}
                             </select>
-                            {buttonData.type === "website" ? (
-                              <input
-                                type="text"
-                                value={buttonData.input}
-                                onChange={(e) => onInputTextChange(e.target.value, buttonData.id)}
-                                className="col-span-7 p-1 rounded-md"
-                              />
-                            ) : (
-                              <select
-                                value={buttonData.input}
-                                onChange={(e) => onInputTextChange(e.target.value, buttonData.id)}
-                                className="col-span-7 p-1 rounded-md"
-                              >
-                                {builderData &&
-                                  builderData.map((pageData) => {
-                                    return (
-                                      <option value={pageData.id} key={pageData.id}>
-                                        {pageData.name}
-                                      </option>
-                                    );
-                                  })}
-                              </select>
-                            )}
-                            <div className="col-span-1 grid">
+                            <input
+                              type="text"
+                              value={buttonData.name}
+                              onChange={(e) => onInputTextChange({ name: e.target.value }, buttonData.id)}
+                              className="col-span-7 p-1 rounded-md"
+                              placeholder="Display Name"
+                            />
+                            <div className="col-span-1 grid row-span-2">
                               <button onClick={() => onDeleteButton(index)} className="place-self-center">
                                 <svg
                                   width="20"
@@ -147,7 +139,7 @@ export default function ButtonSettings({}: Props): ReactElement {
                                 </svg>
                               </button>
                             </div>
-                            <div className="col-span-1 grid">
+                            <div className="col-span-1 grid row-span-2">
                               <svg
                                 width="20"
                                 height="20"
@@ -160,6 +152,36 @@ export default function ButtonSettings({}: Props): ReactElement {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 8h16M4 16h16" />
                               </svg>
                             </div>
+                            {buttonData.type === "website" ? (
+                              <input
+                                type="text"
+                                value={buttonData.url}
+                                onChange={(e) => onInputTextChange({ url: e.target.value }, buttonData.id)}
+                                className="col-span-10 p-1 rounded-md"
+                                placeholder="Website URL"
+                              />
+                            ) : (
+                              <select
+                                value={buttonData.pageId}
+                                onChange={(e) => onInputTextChange({ pageId: e.target.value }, buttonData.id)}
+                                className="col-span-10 p-1 rounded-md"
+                              >
+                                {builderData &&
+                                  builderData.map((pageData) => {
+                                    return (
+                                      <option value={pageData.id} key={pageData.id}>
+                                        {pageData.name}
+                                      </option>
+                                    );
+                                  })}
+                              </select>
+                            )}
+                            {buttonData.type === "website" && buttonData.url && !isUrlValid(buttonData.url) && (
+                              <div className="col-span-12 rounded-md text-white bg-red-600 px-2">Please enter valid Url</div>
+                            )}
+                            {buttonData.type === "website" && buttonData.url === "" && (
+                              <div className="col-span-12 rounded-md text-white bg-red-600 px-2">Please enter Url</div>
+                            )}
                           </div>
                         </li>
                       )}
