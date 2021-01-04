@@ -71,7 +71,7 @@ export default function PageSelector(): ReactElement {
   };
 
   return (
-    <React.Fragment>
+    <div className="p-2">
       <h3 className="text-xl p-1">Pages</h3>
       <DragDropContext onDragEnd={handleOnDragEnd}>
         <Droppable droppableId="pages">
@@ -165,6 +165,6 @@ export default function PageSelector(): ReactElement {
           Add Page
         </button>
       </div>
-    </React.Fragment>
+    </div>
   );
 }

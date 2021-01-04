@@ -6,7 +6,7 @@ import MessageSettings from "./MessageSettings";
 
 export default function SettingsPanel(): ReactElement {
   return (
-    <div className="grid">
+    <div className="grid p-2">
       <h3 className="text-xl p-1">Settings</h3>
 
       <InvokerSettings />

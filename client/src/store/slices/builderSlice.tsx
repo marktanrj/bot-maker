@@ -1,5 +1,9 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
+import _ from "lodash";
 import { v4 as uuidv4 } from "uuid";
+
+import { serverURL } from "../../config/config";
 
 interface ContentType {
   type: "text" | "photo";
@@ -78,13 +82,33 @@ const builderDataInitState: NodeType[] = [
   },
 ];
 
+// export const saveBot = createAsyncThunk("builderReducer/saveBot", async (__, { rejectWithValue, getState }) => {
+//   const state = getState() as any;
+//   const endpoint = new URL("/bot/save", serverURL);
+//   const data = state.builderReducer.builderData;
+//   try {
+//     const response = await axios.post(endpoint.href, data);
+//     return response.data;
+//   } catch (error) {
+//     let errorMessage = _.get(error, "response.data.errors[0]", "");
+//     if (!errorMessage) {
+//       errorMessage = _.get(error, "message", "Please try again!");
+//     }
+//     return rejectWithValue(errorMessage);
+//   }
+// });
+
 export const builderSlice = createSlice({
   name: "builderReducer",
   initialState: {
     builderData: builderDataInitState,
     selectedPageId: "main",
+    botName: "",
   },
   reducers: {
+    updateBotName: (state, action) => {
+      state.botName = action.payload;
+    },
     addPage: (state) => {
       state.builderData.push({
         id: uuidv4(),
@@ -125,6 +149,7 @@ export const builderSlice = createSlice({
 });
 
 export const {
+  updateBotName,
   addPage,
   updateAllPage,
   updateSelectedPageId,

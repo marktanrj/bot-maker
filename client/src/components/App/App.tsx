@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React, { Suspense, useEffect } from "react";
 import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
 
 import PrivateRoute from "../Common/PrivateRoute";
@@ -16,6 +16,8 @@ const BuilderPage = React.lazy(() => import("../BuilderPage"));
 
 function App() {
   const user = useSelector((state: RootState) => state.userReducer.user);
+
+  useEffect(() => {}, [user]); //to refresh this component to display/hide navbar
 
   return (
     <div className="bg-gray-200 min-h-screen">
