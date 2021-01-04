@@ -1,16 +1,22 @@
-import React, { ReactElement } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
 import TextBlockSettings from "./TextBlockSettings";
 import PhotoBlockSettings from "./PhotoBlockSettings";
 
 interface Props {
-  contentType: string;
+  node: any;
 }
 
-export default function ContentBlockSettingsSelector({ contentType }: Props): ReactElement {
+export default function ContentBlockSettingsSelector({ node }: Props): ReactElement {
+  const [contentType, setContentType] = useState<string>("");
+
+  useEffect(() => {
+    if (node && node.content) setContentType(node.content.type);
+  }, [node]);
+
   if (contentType === "text") {
-    return <TextBlockSettings />;
+    return <TextBlockSettings node={node} />;
   } else if (contentType === "photo") {
-    return <PhotoBlockSettings />;
+    return <PhotoBlockSettings node={node} />;
   }
   return <div />;
 }

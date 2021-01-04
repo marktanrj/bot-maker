@@ -2,35 +2,35 @@ import React, { ReactElement, useCallback, useEffect, useState } from "react";
 import _ from "lodash";
 import { useDispatch, useSelector } from "react-redux";
 
-import { saveBlock } from "../../../store/slices/builderSlice";
-import { RootState } from "../../../store/store";
+import { saveBlockContent } from "../../../../../store/slices/builderSlice";
+import { RootState } from "../../../../../store/store";
 
-export default function TextBlockSettings(): ReactElement {
+interface Props {
+  node: any;
+}
+
+export default function TextBlockSettings({ node }: Props): ReactElement {
   const dispatch = useDispatch();
 
   const [textInput, setTextInput] = useState("");
 
-  const selectedPageId = useSelector((state: RootState) => state.builderReducer.selectedPageId);
-  const builderData = useSelector((state: RootState) => state.builderReducer.builderData);
-
   useEffect(() => {
-    if (builderData && selectedPageId) {
-      const data = builderData.filter((item) => item.id === selectedPageId)[0];
-      setTextInput(data.content.settings.text);
+    if (node) {
+      setTextInput(node.content.settings.text);
     }
-  }, [builderData, selectedPageId]);
+  }, [node]);
 
   const debouncedSave = useCallback(
     _.debounce(({ textareaInput }) => {
       dispatch(
-        saveBlock({
+        saveBlockContent({
           type: "text",
           settings: {
             text: textareaInput,
           },
         })
       );
-    }, 300),
+    }, 200),
     []
   );
 

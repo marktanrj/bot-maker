@@ -2,7 +2,7 @@ import React, { ReactElement, useEffect, useState } from "react";
 import _ from "lodash";
 
 import PageSelector from "./PageSelector";
-import LayoutBuilder from "./LayoutBuilder";
+import SettingsPanel from "./SettingsPanel";
 import PreviewPanel from "./PreviewPanel";
 
 export default function BuilderPage(): ReactElement {
@@ -13,9 +13,9 @@ export default function BuilderPage(): ReactElement {
           <PageSelector />
         </div>
         <div className="col-span-5 p-2 rounded-md bg-gray-100 shadow-md">
-          <LayoutBuilder />
+          <SettingsPanel />
         </div>
-        <div className="col-span-4 p-2 rounded-md bg-gray-100 shadow-md">
+        <div className="col-span-4 rounded-md bg-gray-100 shadow-md">
           <PreviewPanel />
         </div>
       </div>

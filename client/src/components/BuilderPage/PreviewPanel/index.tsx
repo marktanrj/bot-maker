@@ -1,7 +1,7 @@
 import React, { ReactElement, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
-import { RootState } from "../../store/store";
+import { RootState } from "../../../store/store";
 import ContentBlockSelector from "./ContentBlocks";
 
 export default function PreviewPanel(): ReactElement {
@@ -19,7 +19,7 @@ export default function PreviewPanel(): ReactElement {
 
   return (
     <div>
-      <h3 className="text-xl p-1">Preview</h3>
+      <h3 className="text-xl p-3">Preview</h3>
       <div className="grid grid-cols-8 gap-3 bg-blue-900 p-3">
         <div className="col-span-1 self-end rounded-full bg-pink-300 h-10 w-10 grid">
           <div className="place-self-center">B</div>

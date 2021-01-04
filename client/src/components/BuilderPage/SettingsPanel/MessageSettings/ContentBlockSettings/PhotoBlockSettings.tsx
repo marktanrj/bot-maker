@@ -2,31 +2,30 @@ import React, { ReactElement, useCallback, useEffect, useState } from "react";
 import _ from "lodash";
 import { useDispatch, useSelector } from "react-redux";
 
-import { saveBlock } from "../../../store/slices/builderSlice";
-import { RootState } from "../../../store/store";
+import { saveBlockContent } from "../../../../../store/slices/builderSlice";
+import { RootState } from "../../../../../store/store";
 
-export default function PhotoBlockSettings(): ReactElement {
+interface Props {
+  node: any;
+}
+
+export default function PhotoBlockSettings({ node }: Props): ReactElement {
   const dispatch = useDispatch();
 
   const [urlInput, setUrlInput] = useState("");
   const [captionInput, setCaptionInput] = useState("");
 
-  const selectedPageId = useSelector((state: RootState) => state.builderReducer.selectedPageId);
-  const builderData = useSelector((state: RootState) => state.builderReducer.builderData);
-
   useEffect(() => {
-    if (builderData && selectedPageId) {
-      const data = builderData.filter((item) => item.id === selectedPageId)[0];
-      setUrlInput(data.content.settings.url);
-      setCaptionInput(data.content.settings.caption);
+    if (node) {
+      setUrlInput(node.content.settings.url);
+      setCaptionInput(node.content.settings.caption);
     }
-  }, [builderData, selectedPageId]);
+  }, [node]);
 
   const debouncedSave = useCallback(
     _.debounce(({ url, caption }) => {
-      console.log({ url, caption, urlInput, captionInput });
       dispatch(
-        saveBlock({
+        saveBlockContent({
           type: "photo",
           settings: {
             url: url || urlInput,
@@ -34,7 +33,7 @@ export default function PhotoBlockSettings(): ReactElement {
           },
         })
       );
-    }, 300),
+    }, 200),
     []
   );
 

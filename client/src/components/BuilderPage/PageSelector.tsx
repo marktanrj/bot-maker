@@ -38,17 +38,7 @@ export default function PageSelector(): ReactElement {
   };
 
   const onPageAdd = () => {
-    dispatch(
-      addPage({
-        name: `Untitled`,
-        content: {
-          type: "text",
-          settings: {
-            text: "",
-          },
-        },
-      })
-    );
+    dispatch(addPage());
   };
 
   const [isEditing, setIsEditing] = useState<string | null>(null);

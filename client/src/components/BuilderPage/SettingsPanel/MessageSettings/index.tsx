@@ -2,29 +2,32 @@ import React, { ReactElement, ReactNode, useEffect, useState, useCallback, Mouse
 import { useDispatch, useSelector } from "react-redux";
 import _ from "lodash";
 
-import { updateAllPage } from "../../store/slices/builderSlice";
-import { RootState } from "../../store/store";
 import ContentBlockSettingsSelector, { blockOptionValues, defaultBlockValues } from "./ContentBlockSettings";
+import { RootState } from "../../../../store/store";
+import { updateAllPage } from "../../../../store/slices/builderSlice";
 
-export default function LayoutBuilder(): ReactElement {
+interface Props {}
+
+export default function MessageSettings({}: Props): ReactElement {
   const dispatch = useDispatch();
+  const [node, setNode] = useState<any>(undefined);
 
   const selectedPageId = useSelector((state: RootState) => state.builderReducer.selectedPageId);
   const builderData = useSelector((state: RootState) => state.builderReducer.builderData);
 
-  const [selectedContentType, setSelectedContentType] = useState(blockOptionValues[0].value);
-
   useEffect(() => {
     if (builderData && selectedPageId) {
       const data = builderData.filter((item) => item.id === selectedPageId)[0];
+      setNode(data);
       setSelectedContentType(data.content.type);
     }
-  }, [selectedPageId]);
+  }, [builderData, selectedPageId]);
+
+  const [selectedContentType, setSelectedContentType] = useState(blockOptionValues[0].value);
 
   const onContentTypeChange = (e: any) => {
     const contentType = e.target.value;
     setSelectedContentType(contentType);
-
     const items = _.cloneDeep(builderData);
     items.forEach((item) => {
       if (item.id === selectedPageId) {
@@ -32,17 +35,11 @@ export default function LayoutBuilder(): ReactElement {
       }
       return item;
     });
-
     dispatch(updateAllPage(items));
   };
 
   return (
-    <div className="grid">
-      <h3 className="text-xl p-1">Settings</h3>
-
-      <p className="place-self-center font-bold">Invokers</p>
-      <hr className="my-3 border-4" />
-
+    <React.Fragment>
       <p className="place-self-center font-bold">Message</p>
       <div>
         <p>Content Type</p>
@@ -57,14 +54,9 @@ export default function LayoutBuilder(): ReactElement {
         </select>
         <hr className="my-3" />
         <div className="p-1">
-          <ContentBlockSettingsSelector contentType={selectedContentType} />
+          <ContentBlockSettingsSelector node={node} />
         </div>
       </div>
-
-      <hr className="my-3 border-4" />
-
-      <p className="place-self-center font-bold">Button(s)</p>
-      <button className="rounded-md p-1 my-1 bg-purple-300 hover:bg-red-700 w-full">Add Button</button>
-    </div>
+    </React.Fragment>
   );
 }

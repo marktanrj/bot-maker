@@ -6,10 +6,23 @@ interface ContentType {
   settings: any;
 }
 
+interface Invoker {
+  type: "command" | "text";
+  input?: string;
+}
+
+interface Button {
+  id: string;
+  type: "website" | "page";
+  input?: string;
+}
+
 interface NodeType {
   id: string;
   name: string;
   content: ContentType;
+  invokers: Invoker[];
+  buttons: Button[];
 }
 
 const builderDataInitState: NodeType[] = [
@@ -22,6 +35,19 @@ const builderDataInitState: NodeType[] = [
         text: "Welcome to bot!",
       },
     },
+    invokers: [
+      {
+        type: "command",
+        input: "start",
+      },
+    ],
+    buttons: [
+      {
+        id: "1",
+        type: "website",
+        input: "website",
+      },
+    ],
   },
   {
     id: "2",
@@ -32,6 +58,8 @@ const builderDataInitState: NodeType[] = [
         text: "Test 2",
       },
     },
+    invokers: [],
+    buttons: [],
   },
   {
     id: "3",
@@ -42,6 +70,8 @@ const builderDataInitState: NodeType[] = [
         text: "Test 3",
       },
     },
+    invokers: [],
+    buttons: [],
   },
 ];
 
@@ -52,9 +82,19 @@ export const builderSlice = createSlice({
     selectedPageId: "main",
   },
   reducers: {
-    addPage: (state, action: { payload: { name: string; content: ContentType }; [x: string]: any }) => {
-      const item = action.payload;
-      state.builderData.push({ id: uuidv4(), ...item });
+    addPage: (state) => {
+      state.builderData.push({
+        id: uuidv4(),
+        name: `Untitled`,
+        content: {
+          type: "text",
+          settings: {
+            text: "",
+          },
+        },
+        invokers: [],
+        buttons: [],
+      } as NodeType);
     },
     updateAllPage: (state, action) => {
       state.builderData = action.payload;
@@ -62,13 +102,33 @@ export const builderSlice = createSlice({
     updateSelectedPageId: (state, action) => {
       state.selectedPageId = action.payload;
     },
-    saveBlock: (state, action) => {
+    saveBlockContent: (state, action) => {
       const itemToChange = state.builderData.filter((item) => item.id === state.selectedPageId)[0];
       itemToChange.content = action.payload;
+    },
+    saveBlockInvoker: (state, action) => {
+      const itemToChange = state.builderData.filter((item) => item.id === state.selectedPageId)[0];
+      itemToChange.invokers = action.payload;
+    },
+    saveBlockButton: (state, action) => {
+      const itemToChange = state.builderData.filter((item) => item.id === state.selectedPageId)[0];
+      itemToChange.buttons = action.payload;
+    },
+    addButton: (state) => {
+      const itemToChange = state.builderData.filter((item) => item.id === state.selectedPageId)[0];
+      itemToChange.buttons.push({ id: uuidv4(), type: "website", input: "" } as Button);
     },
   },
 });
 
-export const { addPage, updateAllPage, updateSelectedPageId, saveBlock } = builderSlice.actions;
+export const {
+  addPage,
+  updateAllPage,
+  updateSelectedPageId,
+  saveBlockContent,
+  saveBlockInvoker,
+  saveBlockButton,
+  addButton,
+} = builderSlice.actions;
 
 export default builderSlice.reducer;
