@@ -1,10 +1,11 @@
 import React, { ReactElement, useEffect, useState } from "react";
 import _ from "lodash";
 
-import PageSelector from "./PageSelector";
+import PagePanel from "./PagePanel";
 import SettingsPanel from "./SettingsPanel";
 import PreviewPanel from "./PreviewPanel";
 import BotTitle from "./BotTitle";
+import BuildButton from "./BuildButton";
 
 export default function BuilderPage(): ReactElement {
   return (
@@ -13,7 +14,7 @@ export default function BuilderPage(): ReactElement {
         <BotTitle />
         <div className="grid grid-cols-12 gap-6">
           <div className="col-span-3 rounded-md bg-gray-100 shadow-md">
-            <PageSelector />
+            <PagePanel />
           </div>
           <div className="col-span-5 rounded-md bg-gray-100 shadow-md pb-5">
             <SettingsPanel />
@@ -22,6 +23,7 @@ export default function BuilderPage(): ReactElement {
             <PreviewPanel />
           </div>
         </div>
+        <BuildButton />
       </div>
     </div>
   );

@@ -3,10 +3,10 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { useDispatch, useSelector } from "react-redux";
 import _ from "lodash";
 
-import { RootState } from "../../store/store";
-import { addPage, updateAllPage, updateSelectedPageId } from "../../store/slices/builderSlice";
+import { RootState } from "../../../store/store";
+import { addPage, updateAllPage, updateSelectedPageId } from "../../../store/slices/builderSlice";
 
-export default function PageSelector(): ReactElement {
+export default function PagePanel(): ReactElement {
   const dispatch = useDispatch();
 
   const builderData = useSelector((state: RootState) => state.builderReducer.builderData);

@@ -62,6 +62,24 @@ const builderDataInitState: NodeType[] = [
 //   }
 // });
 
+export const buildBot = createAsyncThunk("builderReducer/buildBot", async (__, { rejectWithValue, getState }) => {
+  const state = getState() as any;
+  const endpoint = new URL("/bot/build", serverURL);
+  const data = state.builderReducer.builderData;
+  try {
+    const response = await axios.post(endpoint.href, {
+      data,
+    });
+    return response.data;
+  } catch (error) {
+    let errorMessage = _.get(error, "response.data.errors[0]", "");
+    if (!errorMessage) {
+      errorMessage = _.get(error, "message", "Please try again!");
+    }
+    return rejectWithValue(errorMessage);
+  }
+});
+
 export const builderSlice = createSlice({
   name: "builderReducer",
   initialState: {

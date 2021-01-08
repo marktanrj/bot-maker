@@ -7,8 +7,9 @@ import _ from "lodash";
 import logger from "./utils/loggerWrapper";
 import helmet from "helmet";
 
-import userRoute from "./components/user/userRoute";
 import errorHandler from "./handlers/errorHandler";
+import userRoute from "./components/user/userRoute";
+import botRoute from "./components/bot/botRoute";
 
 const PORT = 4000;
 
@@ -27,6 +28,7 @@ const main = async () => {
   });
 
   app.use("/user", userRoute);
+  app.use("/bot", botRoute);
 
   app.use(errorHandler);
 
