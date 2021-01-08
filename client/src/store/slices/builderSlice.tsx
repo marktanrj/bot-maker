@@ -41,42 +41,6 @@ const builderDataInitState: NodeType[] = [
         text: "Welcome to bot!",
       },
     },
-    invokers: [
-      {
-        type: "command",
-        input: "start",
-      },
-    ],
-    buttons: [
-      {
-        id: "1",
-        name: "site",
-        type: "website",
-        url: "www.google.com",
-      },
-    ],
-  },
-  {
-    id: "2",
-    name: "Test",
-    content: {
-      type: "text",
-      settings: {
-        text: "Test 2",
-      },
-    },
-    invokers: [],
-    buttons: [],
-  },
-  {
-    id: "3",
-    name: "Test2",
-    content: {
-      type: "text",
-      settings: {
-        text: "Test 3",
-      },
-    },
     invokers: [],
     buttons: [],
   },
@@ -106,6 +70,10 @@ export const builderSlice = createSlice({
     botName: "",
   },
   reducers: {
+    createNewBotFromScratch: (state) => {
+      state.builderData = builderDataInitState;
+      state.botName = "Untitled";
+    },
     updateBotName: (state, action) => {
       state.botName = action.payload;
     },
@@ -149,6 +117,7 @@ export const builderSlice = createSlice({
 });
 
 export const {
+  createNewBotFromScratch,
   updateBotName,
   addPage,
   updateAllPage,
