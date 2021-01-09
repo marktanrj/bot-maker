@@ -1,3 +1,3 @@
 export * from "./node";
 export * from "./contentSettings";
-export * from "./contentFunctions";
+export * from "./invokersSettings";

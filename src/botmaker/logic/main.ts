@@ -1,46 +1,50 @@
 import JSZip from "jszip";
-import { NodeType } from "../../types";
-import { startCode } from "../codesnippets/startCode";
-import getContentFunction from "./getContentFunction";
 import fs from "fs";
+
+import { NodeType } from "../../types";
+
+import { startCode } from "../codesnippets/startCode";
 import { packageJsonText } from "../codesnippets/packageJson";
 import { endCode } from "../codesnippets/endCode";
 import { dotenvText } from "../codesnippets/dotenv";
 
+import { buildContent } from "./contentManager";
+import { buildInvoker } from "./invokerManager";
+
 export default (botData: NodeType[]): any => {
   const zip = new JSZip();
 
-  let mainBotCode = ``;
-  mainBotCode += startCode;
+  zip.file(`.env`, dotenvText);
+  zip.file(`package.json`, packageJsonText);
+
+  let mainCode = ``;
+  mainCode += startCode;
 
   let importsCode = ``;
   let bodyCode = ``;
 
   botData.forEach((page: NodeType) => {
-    const contentType = page.content.type;
-    const contentFunction = getContentFunction(contentType);
-
     const nameOfFunction = page.name.split(" ").join("_");
-    const settingsObj = page.content.settings;
-    const contentFunctionText = contentFunction(nameOfFunction, settingsObj as any);
 
-    zip.file(`controllers/${nameOfFunction}.js`, contentFunctionText);
+    //build content
+    const contentData = page.content;
+    const contentFunctionText = buildContent({ contentData, nameOfFunction });
+    zip.file(`src/${nameOfFunction}.js`, contentFunctionText);
 
-    importsCode += `const {${nameOfFunction}} = require("./controllers/${nameOfFunction}");\n`;
+    //add imports
+    importsCode += `\nconst {${nameOfFunction}} = require("./src/${nameOfFunction}");\n`;
 
-    const invokers = page.invokers;
-    const invokersText = getInvokers(invokers, nameOfFunction);
-
+    //build invokers
+    const invokersData = page.invokers;
+    const invokersText = buildInvoker({ invokersData, nameOfFunction });
     bodyCode += invokersText;
   });
 
-  mainBotCode += importsCode;
-  mainBotCode += bodyCode;
-  mainBotCode += endCode;
+  mainCode += importsCode;
+  mainCode += bodyCode;
+  mainCode += endCode;
 
-  zip.file(`index.js`, mainBotCode);
-  zip.file(`package.json`, packageJsonText);
-  zip.file(`.env`, dotenvText);
+  zip.file(`index.js`, mainCode);
 
   zip
     .generateNodeStream({ type: "nodebuffer", streamFiles: true })
@@ -49,15 +53,3 @@ export default (botData: NodeType[]): any => {
       console.log("out.zip written.");
     });
 };
-
-function getInvokers(invokers: any, func: any): string {
-  const k = invokers.map((item: any) => {
-    if (item.type === "command") {
-      return `
-bot.command(\`/${item.input}\`, ${func});
-      `;
-    }
-  });
-
-  return k.join("\n");
-}
