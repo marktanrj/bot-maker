@@ -1,3 +1,4 @@
+import { allButtonsSettingsType } from "./buttonsSettings";
 import { allContentSettingsType } from "./contentSettings";
 import { allInvokersSettingsType } from "./invokersSettings";
 
@@ -7,16 +8,16 @@ export interface ContentType {
 }
 
 export interface InvokerType {
+  id: string;
   type: "command" | "text";
   settings: allInvokersSettingsType;
 }
 
 export interface ButtonType {
   id: string;
-  name: string;
+  displayName: string;
   type: "website" | "page";
-  pageId?: string;
-  url?: string;
+  settings: allButtonsSettingsType;
 }
 
 export interface NodeType {
