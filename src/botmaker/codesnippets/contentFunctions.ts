@@ -2,33 +2,71 @@ import { sendMessageSettings, sendPhotoSettings } from "../../types";
 
 export type allContentFunctionsType = generateSendMessageType | generateSendPhotoType;
 
-export type generateSendMessageType = (nameOfFunction: string, settingsObj: sendMessageSettings) => string;
-export type generateSendPhotoType = (nameOfFunction: string, settingsObj: sendPhotoSettings) => string;
+export type generateSendMessageType = ({
+  nameOfFunction,
+  settingsObj,
+  compiledButtonText,
+}: {
+  nameOfFunction: string;
+  settingsObj: sendMessageSettings;
+  compiledButtonText: string;
+}) => string;
+export type generateSendPhotoType = ({
+  nameOfFunction,
+  settingsObj,
+  compiledButtonText,
+}: {
+  nameOfFunction: string;
+  settingsObj: sendPhotoSettings;
+  compiledButtonText: string;
+}) => string;
 
-export const generateSendMessage: generateSendMessageType = (
-  nameOfFunction: string,
-  settingsObj: sendMessageSettings,
-): string => {
+export const generateSendMessage: generateSendMessageType = ({ nameOfFunction, settingsObj, compiledButtonText }) => {
   const { text } = settingsObj;
-  const output = `
+  if (text === "") return "";
+
+  let output = "";
+  if (compiledButtonText.length > 0) {
+    output = `
+exports.${nameOfFunction} = (ctx, next) => {
+  ctx.reply(\`${text}\`, {
+    ${compiledButtonText}
+  })
+}
+  `;
+  } else {
+    output = `
 exports.${nameOfFunction} = (ctx, next) => {
   ctx.reply(\`${text}\`)
 }
-`;
+  `;
+  }
   return output;
 };
 
-export const generateSendPhoto: generateSendPhotoType = (
-  nameOfFunction: string,
-  settingsObj: sendPhotoSettings,
-): string => {
+export const generateSendPhoto: generateSendPhotoType = ({ nameOfFunction, settingsObj, compiledButtonText }) => {
   const { url, caption } = settingsObj;
-  const output = `
+  if (url === "") return "";
+
+  let output = "";
+  if (compiledButtonText.length > 0) {
+    output = `
+exports.${nameOfFunction} = (ctx, next) => {
+  ctx.replyWithPhoto(\`${url}\`, {
+    caption: \`${caption}\`,
+    ${compiledButtonText}
+  })
+}
+    `;
+  } else {
+    output = `
 exports.${nameOfFunction} = (ctx, next) => {
   ctx.replyWithPhoto(\`${url}\`, {
     caption: \`${caption}\`
   })
 }
-`;
+    `;
+  }
+
   return output;
 };

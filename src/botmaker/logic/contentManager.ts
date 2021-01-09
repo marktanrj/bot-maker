@@ -3,15 +3,16 @@ import { allContentFunctionsType, generateSendMessage, generateSendPhoto } from 
 
 interface buildContentProp {
   contentData: ContentType;
+  compiledButtonText: string;
   nameOfFunction: string;
 }
 
-export const buildContent = ({ contentData, nameOfFunction }: buildContentProp): string => {
+export const buildContent = ({ contentData, compiledButtonText, nameOfFunction }: buildContentProp): string => {
   const contentType = contentData.type;
   const settingsObj = contentData.settings as any;
 
-  const contentFunction = getContentFunction(contentType);
-  const contentFunctionText = contentFunction(nameOfFunction, settingsObj);
+  const generateContent = getContentFunction(contentType);
+  const contentFunctionText = generateContent({ nameOfFunction, settingsObj, compiledButtonText });
   return contentFunctionText;
 };
 

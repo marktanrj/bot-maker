@@ -10,9 +10,26 @@ import { dotenvText } from "../codesnippets/dotenv";
 
 import { buildContent } from "./contentManager";
 import { buildInvoker } from "./invokerManager";
+import { buildButton, buildButtonCallbacks } from "./buttonManager";
 
 export default (botData: NodeType[]): any => {
+  const pageIdMapper: any = {};
+  const usedFunctionNames: any = [];
+  botData.forEach((page: NodeType) => {
+    let nameOfFunction = page.name.split(" ").join("_");
+    if (usedFunctionNames.includes(nameOfFunction)) {
+      let num = 1;
+      do {
+        nameOfFunction += `${num}`;
+        num += 1;
+      } while (usedFunctionNames.includes(nameOfFunction));
+    }
+    pageIdMapper[page.id] = nameOfFunction;
+    usedFunctionNames.push(nameOfFunction);
+  });
+
   const zip = new JSZip();
+  console.dir(botData);
 
   zip.file(`.env`, dotenvText);
   zip.file(`package.json`, packageJsonText);
@@ -23,21 +40,42 @@ export default (botData: NodeType[]): any => {
   let importsCode = ``;
   let bodyCode = ``;
 
+  const delMiddleware = `
+function deleteCtx (ctx, next) {
+  ctx.deleteMessage()
+  next()
+}
+    `;
+  bodyCode += delMiddleware;
+
   botData.forEach((page: NodeType) => {
-    const nameOfFunction = page.name.split(" ").join("_");
+    const nameOfFunction = pageIdMapper[page.id];
+
+    //build button
+    const buttonData = page.buttons;
+    let compiledButtonText = "";
+    if (buttonData.length > 0) {
+      compiledButtonText = buildButton({ buttonData, nameOfFunction });
+    }
 
     //build content
     const contentData = page.content;
-    const contentFunctionText = buildContent({ contentData, nameOfFunction });
-    zip.file(`src/${nameOfFunction}.js`, contentFunctionText);
+    const compiledContentText = buildContent({ contentData, compiledButtonText, nameOfFunction });
+    zip.file(`src/${nameOfFunction}.js`, compiledContentText);
 
     //add imports
-    importsCode += `\nconst {${nameOfFunction}} = require("./src/${nameOfFunction}");\n`;
+    importsCode += `const {${nameOfFunction}} = require("./src/${nameOfFunction}");\n`;
 
     //build invokers
     const invokersData = page.invokers;
-    const invokersText = buildInvoker({ invokersData, nameOfFunction });
-    bodyCode += invokersText;
+    const compiledInvokersText = buildInvoker({ invokersData, nameOfFunction });
+    bodyCode += compiledInvokersText;
+
+    //build button Callbacks
+    if (buttonData.length > 0) {
+      const compiledButtonCallbacks = buildButtonCallbacks({ buttonData, pageIdMapper, nameOfFunction });
+      bodyCode += compiledButtonCallbacks;
+    }
   });
 
   mainCode += importsCode;

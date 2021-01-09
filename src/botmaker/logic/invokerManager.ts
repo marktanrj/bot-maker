@@ -11,8 +11,8 @@ export const buildInvoker = ({ invokersData, nameOfFunction }: buildInvokerProp)
     const invokerType = item.type;
     const settingsObj = item.settings as any;
 
-    const invokerFunction = getInvokerFunction(invokerType);
-    const invokerFunctionText = invokerFunction(nameOfFunction, settingsObj);
+    const generateInvoker = getInvokerFunction(invokerType);
+    const invokerFunctionText = generateInvoker(nameOfFunction, settingsObj);
     return invokerFunctionText;
   });
 
