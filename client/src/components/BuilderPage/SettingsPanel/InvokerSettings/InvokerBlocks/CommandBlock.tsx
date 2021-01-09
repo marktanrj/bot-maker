@@ -11,8 +11,8 @@ export default function CommandBlock({ invokerData, onInputChange, invokerIndex 
     <React.Fragment>
       <input
         type="text"
-        value={invokerData.command}
-        onChange={(e) => onInputChange({ text: e.target.value }, invokerIndex)}
+        value={invokerData.settings.command}
+        onChange={(e) => onInputChange({ command: e.target.value }, invokerIndex)}
         className="col-span-7 p-1 rounded-md"
       />
     </React.Fragment>

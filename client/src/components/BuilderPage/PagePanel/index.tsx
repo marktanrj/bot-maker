@@ -126,7 +126,7 @@ export default function PagePanel(): ReactElement {
                             {isEditing === id && (
                               <div className="grid grid-cols-6 gap-1">
                                 <input
-                                  className="col-span-5"
+                                  className="col-span-5 p-1"
                                   type="text"
                                   value={editingValue}
                                   onChange={(e) => setEditingValue(e.target.value)}
