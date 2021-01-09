@@ -16,7 +16,9 @@ export default function InvokerSettings(): ReactElement {
   useEffect(() => {
     if (builderData && selectedPageId) {
       const data = builderData.filter((item) => item.id === selectedPageId)[0];
-      setInvokers(data.invokers);
+      if (data) {
+        setInvokers(data.invokers);
+      }
     }
   }, [builderData, selectedPageId]);
 

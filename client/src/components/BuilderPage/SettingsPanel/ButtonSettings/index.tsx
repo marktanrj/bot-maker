@@ -22,8 +22,10 @@ export default function ButtonSettings({}: Props): ReactElement {
   useEffect(() => {
     if (builderData && selectedPageId) {
       const data = builderData.filter((item) => item.id === selectedPageId)[0];
-      setButtons(data.buttons);
       setNode(data);
+      if (data) {
+        setButtons(data.buttons);
+      }
     }
   }, [builderData, selectedPageId]);
 

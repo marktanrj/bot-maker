@@ -10,6 +10,7 @@ export default function PagePanel(): ReactElement {
   const dispatch = useDispatch();
 
   const builderData = useSelector((state: RootState) => state.builderReducer.builderData);
+  const selectedPageId = useSelector((state: RootState) => state.builderReducer.selectedPageId);
 
   const [pages, setPages] = useState(builderData);
 
@@ -30,19 +31,18 @@ export default function PagePanel(): ReactElement {
     dispatch(updateAllPage(items));
   }
 
-  const [selectedPageId, setSelectedPageId] = useState<string>("main");
+  const [isEditing, setIsEditing] = useState<string | null>(null);
+  const [editingValue, setEditingValue] = useState<string>("");
 
   const onPageSelect = (pageId: string) => {
-    setSelectedPageId(pageId);
-    dispatch(updateSelectedPageId(pageId));
+    if (!isEditing) {
+      dispatch(updateSelectedPageId(pageId));
+    }
   };
 
   const onPageAdd = () => {
     dispatch(addPage());
   };
-
-  const [isEditing, setIsEditing] = useState<string | null>(null);
-  const [editingValue, setEditingValue] = useState<string>("");
 
   const onPageEditClick = (pageId: string, name: string) => {
     setIsEditing(pageId);
@@ -63,11 +63,10 @@ export default function PagePanel(): ReactElement {
   };
 
   const onPageDeleteClick = (pageId: string) => {
+    dispatch(updateSelectedPageId("main"));
     const items = _.cloneDeep(pages);
     const newItems = items.filter((item) => item.id !== pageId);
     dispatch(updateAllPage(newItems));
-    setSelectedPageId("main");
-    dispatch(updateSelectedPageId("main"));
   };
 
   return (
@@ -86,13 +85,12 @@ export default function PagePanel(): ReactElement {
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
                         className={selectedPageId === id ? `bg-red-500 m-1 rounded-md p-2` : `bg-red-300 m-1 rounded-md p-2`}
-                        onClick={() => onPageSelect(id)}
                       >
                         {selectedPageId === id ? (
                           <React.Fragment>
                             {isEditing === null && (
                               <div className="grid grid-cols-5">
-                                <p className={"col-span-4"}>{name}</p>
+                                <p className="col-span-4">{name}</p>
                                 <div className="col-span-1 flex">
                                   <button onClick={() => onPageEditClick(id, name)}>
                                     <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -147,7 +145,9 @@ export default function PagePanel(): ReactElement {
                           </React.Fragment>
                         ) : (
                           <div className="grid grid-cols-5">
-                            <p className={"col-span-5"}>{name}</p>
+                            <p className={"col-span-5"} onClick={() => onPageSelect(id)}>
+                              {name}
+                            </p>
                           </div>
                         )}
                       </li>

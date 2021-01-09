@@ -20,7 +20,9 @@ export default function ContentSettings({}: Props): ReactElement {
     if (builderData && selectedPageId) {
       const data = builderData.filter((item) => item.id === selectedPageId)[0];
       setNode(data);
-      setSelectedContentType(data.content.type);
+      if (data) {
+        setSelectedContentType(data.content.type);
+      }
     }
   }, [builderData, selectedPageId]);
 
