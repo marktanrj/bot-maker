@@ -8,7 +8,7 @@ export const save = async (req: Request, res: Response, next: NextFunction): Pro
 };
 
 export const build = async (req: Request, res: Response, next: NextFunction): Promise<void | Response> => {
-  const { data } = req.body;
+  const { data, botName, token } = req.body;
   // const repository = await getConnection().getRepository(User);
 
   const file = botmaker(data);
