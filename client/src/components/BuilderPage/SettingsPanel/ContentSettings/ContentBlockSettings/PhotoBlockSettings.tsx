@@ -50,9 +50,9 @@ export default function PhotoBlockSettings({ node }: Props): ReactElement {
     <div>
       <p className="font-semibold">Send Photo Options</p>
       Photo URL
-      <input type="text" className="w-full rounded-md p-2" value={urlInput} onChange={handleUrlChange} />
+      <input type="text" className="w-full rounded-md border-2 p-2" value={urlInput} onChange={handleUrlChange} />
       Caption
-      <textarea className="w-full rounded-md p-2" rows={7} value={captionInput} onChange={handleCaptionChange} />
+      <textarea className="w-full rounded-md border-2 p-2" rows={7} value={captionInput} onChange={handleCaptionChange} />
     </div>
   );
 }

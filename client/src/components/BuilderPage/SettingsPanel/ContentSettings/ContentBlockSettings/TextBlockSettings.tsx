@@ -42,7 +42,7 @@ export default function TextBlockSettings({ node }: Props): ReactElement {
     <div>
       <p className="font-semibold">Send Text Options</p>
       Text
-      <textarea className="w-full rounded-md p-2" rows={5} value={textInput} onChange={handleTextareaChange} />
+      <textarea className="w-full rounded-md border-2 p-2" rows={5} value={textInput} onChange={handleTextareaChange} />
     </div>
   );
 }

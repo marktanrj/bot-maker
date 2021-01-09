@@ -59,9 +59,10 @@ export const buildBot = createAsyncThunk("builderReducer/buildBot", async (__, {
 export const builderSlice = createSlice({
   name: "builderReducer",
   initialState: {
-    builderData: builderDataInitState,
     selectedPageId: "main",
+    builderData: builderDataInitState,
     botName: "",
+    token: "",
   },
   reducers: {
     createNewBotFromScratch: (state) => {
@@ -70,6 +71,9 @@ export const builderSlice = createSlice({
     },
     updateBotName: (state, action) => {
       state.botName = action.payload;
+    },
+    updateToken: (state, action) => {
+      state.token = action.payload;
     },
     addPage: (state) => {
       state.builderData.push({
@@ -117,6 +121,7 @@ export const builderSlice = createSlice({
 export const {
   createNewBotFromScratch,
   updateBotName,
+  updateToken,
   addPage,
   updateAllPage,
   updateSelectedPageId,

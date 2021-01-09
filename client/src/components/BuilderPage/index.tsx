@@ -5,7 +5,7 @@ import PagePanel from "./PagePanel";
 import SettingsPanel from "./SettingsPanel";
 import PreviewPanel from "./PreviewPanel";
 import BotTitle from "./BotTitle";
-import BuildButton from "./BuildButton";
+import Configuration from "./Configuration";
 
 export default function BuilderPage(): ReactElement {
   return (
@@ -23,7 +23,7 @@ export default function BuilderPage(): ReactElement {
             <PreviewPanel />
           </div>
         </div>
-        <BuildButton />
+        <Configuration />
       </div>
     </div>
   );

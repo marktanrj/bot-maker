@@ -44,7 +44,7 @@ export default function ContentSettings({}: Props): ReactElement {
       <p className="place-self-center font-bold">Content</p>
       <div>
         <p>Content Type</p>
-        <select className="w-full rounded-md p-2" value={selectedContentType} onChange={onContentTypeChange}>
+        <select className="w-full rounded-md border-2 p-2" value={selectedContentType} onChange={onContentTypeChange}>
           {blockOptionValues.map((item) => {
             return (
               <option value={item.value} key={item.value}>

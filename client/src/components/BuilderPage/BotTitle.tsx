@@ -21,7 +21,7 @@ export default function BotTitle(): ReactElement {
   };
 
   return (
-    <div className="grid grid-cols-12 gap-3 text-2xl font-bold rounded-md bg-gray-100 mb-3 p-2">
+    <div className="grid grid-cols-12 gap-3 text-2xl font-bold rounded-md bg-gray-100 mb-3 p-2 shadow-md">
       {editing ? (
         <React.Fragment>
           <input className="col-span-11 rounded-md" type="text" value={botName} onChange={handleBotNameChange}></input>
