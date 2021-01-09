@@ -1,4 +1,5 @@
 import { allContentSettingsType } from "./contentSettings";
+import { allInvokersSettingsType } from "./invokersSettings";
 
 export interface ContentType {
   type: "text" | "photo";
@@ -7,7 +8,7 @@ export interface ContentType {
 
 export interface InvokerType {
   type: "command" | "text";
-  input?: string;
+  settings: allInvokersSettingsType;
 }
 
 export interface ButtonType {
