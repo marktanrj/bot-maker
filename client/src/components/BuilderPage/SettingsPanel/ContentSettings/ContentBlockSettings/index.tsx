@@ -31,19 +31,3 @@ export const blockOptionValues = [
     name: "Send Photo",
   },
 ];
-
-export const defaultBlockValues: any = {
-  text: {
-    type: "text",
-    settings: {
-      text: "Text",
-    },
-  },
-  photo: {
-    type: "photo",
-    settings: {
-      url: "",
-      caption: "",
-    },
-  },
-};

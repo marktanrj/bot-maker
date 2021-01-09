@@ -17,8 +17,8 @@ export default function Buttons({ node }: Props): ReactElement {
         buttons.length > 0 &&
         buttons.map((item: any, index: number) => {
           return (
-            <button key={`${item.name}-${item.input}`} className="rounded-md text-white font-semibold bg-gray-600 w-full p-2 mt-2">
-              {item.name ? item.name : "Untitled"}
+            <button key={item.id} className="rounded-md text-white font-semibold bg-gray-600 w-full p-2 mt-2">
+              {item.displayName ? item.displayName : "Untitled"}
             </button>
           );
         })}

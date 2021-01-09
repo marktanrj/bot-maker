@@ -1,9 +1,9 @@
 import _ from "lodash";
 import React, { ReactElement, useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { saveBlockInvoker } from "../../../../store/slices/builderSlice";
+import { saveAllInvoker, addInvoker } from "../../../../store/slices/builderSlice";
 import { RootState } from "../../../../store/store";
-import { blockOptionValues } from "./InvokerBlocks";
+import InvokerBlocksSelector, { blockOptionValues } from "./InvokerBlocks/";
 
 export default function InvokerSettings(): ReactElement {
   const dispatch = useDispatch();
@@ -27,54 +27,50 @@ export default function InvokerSettings(): ReactElement {
       ...items[index],
       type: newType,
     };
-    dispatch(saveBlockInvoker(items));
+    dispatch(saveAllInvoker(items));
   };
 
-  const onInputChange = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
-    const newInput = event.target.value;
+  const onInputChange = (valueObj: { text?: string; command?: string }, index: number) => {
     const items = _.cloneDeep(invokers);
     items[index] = {
       ...items[index],
-      input: newInput,
+      settings: {
+        ...valueObj,
+      },
     };
-    dispatch(saveBlockInvoker(items));
+    dispatch(saveAllInvoker(items));
   };
 
   const onDeleteInvoker = (index: number) => {
     const items = _.cloneDeep(invokers);
     items.splice(index, 1);
-    dispatch(saveBlockInvoker(items));
+    dispatch(saveAllInvoker(items));
   };
 
   const onAddInvoker = () => {
-    const items = _.cloneDeep(invokers);
-    items.push({
-      type: "command",
-      input: "",
-    });
-    dispatch(saveBlockInvoker(items));
+    dispatch(addInvoker());
   };
 
   return (
     <React.Fragment>
       <p className="place-self-center font-bold">Invoker(s)</p>
       {invokers &&
-        invokers.map((item: any, index: number) => {
+        invokers.map((invokerData: any, invokerIndex: number) => {
           return (
-            <div key={index} className="grid grid-cols-12 gap-2 my-1 bg-green-300 m-1 rounded-md p-2">
-              <select onChange={(e) => onSelectType(e, index)} className="col-span-4 rounded-md" value={item.type}>
+            <div key={invokerData.id} className="grid grid-cols-12 gap-2 my-1 bg-green-300 m-1 rounded-md p-2">
+              <select onChange={(e) => onSelectType(e, invokerIndex)} className="col-span-4 rounded-md" value={invokerData.type}>
                 {blockOptionValues &&
-                  blockOptionValues.map((item) => {
+                  blockOptionValues.map((invokerData) => {
                     return (
-                      <option value={item.value} key={item.value}>
-                        {item.name}
+                      <option value={invokerData.value} key={invokerData.value}>
+                        {invokerData.name}
                       </option>
                     );
                   })}
               </select>
-              <input type="text" value={item.input} onChange={(e) => onInputChange(e, index)} className="col-span-7 p-1 rounded-md" />
+              <InvokerBlocksSelector invokerData={invokerData} invokerIndex={invokerIndex} onInputChange={onInputChange} />
               <div className="col-span-1 grid">
-                <button onClick={() => onDeleteInvoker(index)} className="place-self-center">
+                <button onClick={() => onDeleteInvoker(invokerIndex)} className="place-self-center">
                   <svg
                     width="20"
                     height="20"

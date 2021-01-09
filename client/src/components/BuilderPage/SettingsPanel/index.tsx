@@ -2,7 +2,7 @@ import React, { ReactElement } from "react";
 import ButtonSettings from "./ButtonSettings";
 import InvokerSettings from "./InvokerSettings";
 
-import MessageSettings from "./MessageSettings";
+import ContentSettings from "./ContentSettings";
 
 export default function SettingsPanel(): ReactElement {
   return (
@@ -13,7 +13,7 @@ export default function SettingsPanel(): ReactElement {
 
       <hr className="my-3 border-4" />
 
-      <MessageSettings />
+      <ContentSettings />
 
       <hr className="my-3 border-4" />
 

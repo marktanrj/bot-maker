@@ -4,32 +4,8 @@ import _ from "lodash";
 import { v4 as uuidv4 } from "uuid";
 
 import { serverURL } from "../../config/config";
-
-interface ContentType {
-  type: "text" | "photo";
-  settings: any;
-}
-
-interface Invoker {
-  type: "command" | "text";
-  input?: string;
-}
-
-interface Button {
-  id: string;
-  name: string;
-  type: "website" | "page";
-  pageId?: string;
-  url?: string;
-}
-
-interface NodeType {
-  id: string;
-  name: string;
-  content: ContentType;
-  invokers: Invoker[];
-  buttons: Button[];
-}
+import { defaultButtonBlocks, defaultInvokerBlocks } from "../../defaultvalues/defaultvalues";
+import { NodeType } from "../../types";
 
 const builderDataInitState: NodeType[] = [
   {
@@ -115,21 +91,25 @@ export const builderSlice = createSlice({
     updateSelectedPageId: (state, action) => {
       state.selectedPageId = action.payload;
     },
-    saveBlockContent: (state, action) => {
+    saveContent: (state, action) => {
       const itemToChange = state.builderData.filter((item) => item.id === state.selectedPageId)[0];
       itemToChange.content = action.payload;
     },
-    saveBlockInvoker: (state, action) => {
+    saveAllInvoker: (state, action) => {
       const itemToChange = state.builderData.filter((item) => item.id === state.selectedPageId)[0];
       itemToChange.invokers = action.payload;
     },
-    saveBlockButton: (state, action) => {
+    addInvoker: (state) => {
+      const itemToChange = state.builderData.filter((item) => item.id === state.selectedPageId)[0];
+      itemToChange.invokers.push({ ...defaultInvokerBlocks.command, id: uuidv4() });
+    },
+    saveAllButton: (state, action) => {
       const itemToChange = state.builderData.filter((item) => item.id === state.selectedPageId)[0];
       itemToChange.buttons = action.payload;
     },
     addButton: (state) => {
       const itemToChange = state.builderData.filter((item) => item.id === state.selectedPageId)[0];
-      itemToChange.buttons.push({ id: uuidv4(), name: "", type: "website", url: "" });
+      itemToChange.buttons.push({ ...defaultButtonBlocks.page, id: uuidv4() });
     },
   },
 });
@@ -140,9 +120,10 @@ export const {
   addPage,
   updateAllPage,
   updateSelectedPageId,
-  saveBlockContent,
-  saveBlockInvoker,
-  saveBlockButton,
+  saveContent,
+  saveAllInvoker,
+  addInvoker,
+  saveAllButton,
   addButton,
 } = builderSlice.actions;
 

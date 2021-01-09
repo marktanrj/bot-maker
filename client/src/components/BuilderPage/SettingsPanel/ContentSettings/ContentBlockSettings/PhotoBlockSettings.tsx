@@ -1,9 +1,8 @@
 import React, { ReactElement, useCallback, useEffect, useState } from "react";
 import _ from "lodash";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
-import { saveBlockContent } from "../../../../../store/slices/builderSlice";
-import { RootState } from "../../../../../store/store";
+import { saveContent } from "../../../../../store/slices/builderSlice";
 
 interface Props {
   node: any;
@@ -25,7 +24,7 @@ export default function PhotoBlockSettings({ node }: Props): ReactElement {
   const debouncedSave = useCallback(
     _.debounce(({ url, caption }) => {
       dispatch(
-        saveBlockContent({
+        saveContent({
           type: "photo",
           settings: {
             url: url || urlInput,

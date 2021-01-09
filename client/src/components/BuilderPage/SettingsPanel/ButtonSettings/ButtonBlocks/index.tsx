@@ -1,23 +1,24 @@
 import React, { ReactElement, useEffect, useState } from "react";
+import PageBlock from "./PageBlock";
+import WebsiteBlock from "./WebsiteBlock";
 
 interface Props {
-  node: any;
-  updateFunctions: any;
+  buttonData: any;
+  onSettingsChange: Function;
 }
 
-export default function ButtonBlocksSelector({ node, updateFunctions }: Props): ReactElement {
-  // const [buttonType, setButtonType] = useState<string>("");
+export default function ButtonBlocksSelector({ buttonData, onSettingsChange }: Props): ReactElement {
+  const [buttonType, setButtonType] = useState<string>("");
 
-  // useEffect(() => {
-  //   if (node && node.buttons && node.buttons.type) setButtonType(node.buttons.type);
-  // }, [node]);
+  useEffect(() => {
+    if (buttonData && buttonData.type) setButtonType(buttonData.type);
+  }, [buttonData]);
 
-  // if (buttonType === "text") {
-  //   return <WebsiteBlock node={node} />;
-  // }
-  // else if (buttonType === "photo") {
-  //   return <PhotoBlockSettings node={node} />;
-  // }
+  if (buttonType === "website") {
+    return <WebsiteBlock buttonData={buttonData} onSettingsChange={onSettingsChange} />;
+  } else if (buttonType === "page") {
+    return <PageBlock buttonData={buttonData} onSettingsChange={onSettingsChange} />;
+  }
   return <div />;
 }
 

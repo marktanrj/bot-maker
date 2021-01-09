@@ -1,21 +1,25 @@
 import React, { ReactElement, useEffect, useState } from "react";
+import TextBlock from "./TextBlock";
+import CommandBlock from "./CommandBlock";
 
 interface Props {
-  node: any;
+  invokerData: any;
+  onInputChange: Function;
+  invokerIndex: number;
 }
 
-export default function InvokerBlocks({ node }: Props): ReactElement {
-  const [contentType, setContentType] = useState<string>("");
+export default function InvokerBlocksSelector({ invokerData, onInputChange, invokerIndex }: Props): ReactElement {
+  const [invokerType, setInvokerType] = useState<string>("");
 
   useEffect(() => {
-    if (node && node.content) setContentType(node.content.type);
-  }, [node]);
+    if (invokerData && invokerData.type) setInvokerType(invokerData.type);
+  }, [invokerData]);
 
-  // if (contentType === "text") {
-  //   return <TextBlockSettings node={node} />;
-  // } else if (contentType === "photo") {
-  //   return <PhotoBlockSettings node={node} />;
-  // }
+  if (invokerType === "text") {
+    return <TextBlock invokerData={invokerData} invokerIndex={invokerIndex} onInputChange={onInputChange} />;
+  } else if (invokerType === "command") {
+    return <CommandBlock invokerData={invokerData} invokerIndex={invokerIndex} onInputChange={onInputChange} />;
+  }
   return <div />;
 }
 

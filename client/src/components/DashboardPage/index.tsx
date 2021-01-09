@@ -42,7 +42,7 @@ export default function DashboardPage(): ReactElement {
 
         <div className="grid grid-cols-12 gap-6">
           {mybots.map((bot) => {
-            return <BotCard bot={bot} />;
+            return <BotCard key={bot.id} bot={bot} />;
           })}
           <div
             onClick={() => handleCreateNewBot()}

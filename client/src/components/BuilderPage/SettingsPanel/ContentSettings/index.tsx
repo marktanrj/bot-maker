@@ -2,13 +2,14 @@ import React, { ReactElement, ReactNode, useEffect, useState, useCallback, Mouse
 import { useDispatch, useSelector } from "react-redux";
 import _ from "lodash";
 
-import ContentBlockSettingsSelector, { blockOptionValues, defaultBlockValues } from "./ContentBlockSettings";
+import ContentBlockSettingsSelector, { blockOptionValues } from "./ContentBlockSettings";
 import { RootState } from "../../../../store/store";
 import { updateAllPage } from "../../../../store/slices/builderSlice";
+import { defaultMessageBlocks } from "../../../../defaultvalues/defaultvalues";
 
 interface Props {}
 
-export default function MessageSettings({}: Props): ReactElement {
+export default function ContentSettings({}: Props): ReactElement {
   const dispatch = useDispatch();
   const [node, setNode] = useState<any>(undefined);
 
@@ -31,7 +32,7 @@ export default function MessageSettings({}: Props): ReactElement {
     const items = _.cloneDeep(builderData);
     items.forEach((item) => {
       if (item.id === selectedPageId) {
-        item.content = defaultBlockValues[contentType];
+        item.content = defaultMessageBlocks[contentType];
       }
       return item;
     });
@@ -40,7 +41,7 @@ export default function MessageSettings({}: Props): ReactElement {
 
   return (
     <React.Fragment>
-      <p className="place-self-center font-bold">Message</p>
+      <p className="place-self-center font-bold">Content</p>
       <div>
         <p>Content Type</p>
         <select className="w-full rounded-md p-2" value={selectedContentType} onChange={onContentTypeChange}>
