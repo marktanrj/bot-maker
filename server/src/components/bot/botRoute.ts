@@ -1,9 +1,10 @@
 import express from "express";
+import { authenticateUser } from "../../middlewares/authentication";
 import * as botController from "./botController";
 
 const router = express.Router();
 
-router.post("/save", botController.save);
-router.post("/build", botController.build);
+router.post("/save", authenticateUser, botController.save);
+router.post("/build", authenticateUser, botController.build);
 
 export default router;
