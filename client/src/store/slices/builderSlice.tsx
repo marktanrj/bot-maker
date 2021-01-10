@@ -17,7 +17,15 @@ const builderDataInitState: NodeType[] = [
         text: "Welcome to bot!",
       },
     },
-    invokers: [],
+    invokers: [
+      {
+        id: "start",
+        type: "command",
+        settings: {
+          command: "start",
+        },
+      },
+    ],
     buttons: [],
   },
 ];
@@ -41,10 +49,14 @@ const builderDataInitState: NodeType[] = [
 export const buildBot = createAsyncThunk("builderReducer/buildBot", async (__, { rejectWithValue, getState }) => {
   const state = getState() as any;
   const endpoint = new URL("/bot/build", serverURL);
-  const data = state.builderReducer.builderData;
+  const botData = state.builderReducer.builderData;
+  const botName = state.builderReducer.botName;
+  const botToken = state.builderReducer.token;
   try {
     const response = await axios.post(endpoint.href, {
-      data,
+      botData,
+      botName,
+      botToken,
     });
     return response.data;
   } catch (error) {

@@ -8,10 +8,10 @@ export const save = async (req: Request, res: Response, next: NextFunction): Pro
 };
 
 export const build = async (req: Request, res: Response, next: NextFunction): Promise<void | Response> => {
-  const { data, botName, token } = req.body;
+  const { botData, botName, botToken } = req.body;
   // const repository = await getConnection().getRepository(User);
 
-  const file = botmaker(data);
+  const file = botmaker({ botData, botName, botToken });
   console.log(file);
   return res.sendStatus(200);
 };
