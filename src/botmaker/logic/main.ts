@@ -7,32 +7,24 @@ import { startCode } from "../codesnippets/startCode";
 import { packageJsonText } from "../codesnippets/packageJson";
 import { endCode } from "../codesnippets/endCode";
 import { dotenvText } from "../codesnippets/dotenv";
+import { delMiddleware } from "../codesnippets/middlewares";
 
 import { buildContent } from "./contentManager";
 import { buildInvoker } from "./invokerManager";
 import { buildButton, buildButtonCallbacks } from "./buttonManager";
+import { mapPageIdToFunction } from "./mapPageIdToFunction";
 
-export default (botData: NodeType[]): any => {
-  const pageIdMapper: any = {};
-  const usedFunctionNames: any = [];
-  botData.forEach((page: NodeType) => {
-    let nameOfFunction = page.name.split(" ").join("_");
-    if (usedFunctionNames.includes(nameOfFunction)) {
-      let num = 1;
-      do {
-        nameOfFunction += `${num}`;
-        num += 1;
-      } while (usedFunctionNames.includes(nameOfFunction));
-    }
-    pageIdMapper[page.id] = nameOfFunction;
-    usedFunctionNames.push(nameOfFunction);
-  });
+interface mainProps {
+  botData: NodeType[];
+  botName: string;
+  botToken: string;
+}
+
+export default ({ botData, botName, botToken }: mainProps): any => {
+  const pageIdToFunctionMap: { [id: string]: string } = mapPageIdToFunction(botData);
 
   const zip = new JSZip();
   console.dir(botData);
-
-  zip.file(`.env`, dotenvText);
-  zip.file(`package.json`, packageJsonText);
 
   let mainCode = ``;
   mainCode += startCode;
@@ -40,16 +32,12 @@ export default (botData: NodeType[]): any => {
   let importsCode = ``;
   let bodyCode = ``;
 
-  const delMiddleware = `
-function deleteCtx (ctx, next) {
-  ctx.deleteMessage()
-  next()
-}
-    `;
-  bodyCode += delMiddleware;
+  importsCode += `const { deleteCtxMessage } = require("./middlewares/deleteCtxMessage")\n`;
+
+  zip.file(`middlewares/deleteCtxMessage.js`, delMiddleware);
 
   botData.forEach((page: NodeType) => {
-    const nameOfFunction = pageIdMapper[page.id];
+    const nameOfFunction = pageIdToFunctionMap[page.id];
 
     //build button
     const buttonData = page.buttons;
@@ -64,7 +52,7 @@ function deleteCtx (ctx, next) {
     zip.file(`src/${nameOfFunction}.js`, compiledContentText);
 
     //add imports
-    importsCode += `const {${nameOfFunction}} = require("./src/${nameOfFunction}");\n`;
+    importsCode += `const { ${nameOfFunction} } = require("./src/${nameOfFunction}");\n`;
 
     //build invokers
     const invokersData = page.invokers;
@@ -73,7 +61,7 @@ function deleteCtx (ctx, next) {
 
     //build button Callbacks
     if (buttonData.length > 0) {
-      const compiledButtonCallbacks = buildButtonCallbacks({ buttonData, pageIdMapper, nameOfFunction });
+      const compiledButtonCallbacks = buildButtonCallbacks({ buttonData, pageIdToFunctionMap, nameOfFunction });
       bodyCode += compiledButtonCallbacks;
     }
   });
@@ -81,8 +69,12 @@ function deleteCtx (ctx, next) {
   mainCode += importsCode;
   mainCode += bodyCode;
   mainCode += endCode;
-
   zip.file(`index.js`, mainCode);
+
+  //add other files
+  const dotenvWithTokenText = dotenvText + botToken;
+  zip.file(`.env`, dotenvWithTokenText);
+  zip.file(`package.json`, packageJsonText);
 
   zip
     .generateNodeStream({ type: "nodebuffer", streamFiles: true })
