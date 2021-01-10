@@ -69,7 +69,7 @@ export const signIn = async (req: Request, res: Response, next: NextFunction): P
   }
 
   const userObject = { username: user.username, email: user.email };
-  const token = jwt.sign(userObject, "10", { expiresIn: "7d" });
+  const token = jwt.sign(userObject, process.env.JWT_SECRET as string, { expiresIn: "7d" });
   const userObjectWithToken = { ...userObject, token };
   req.body.user = userObjectWithToken;
 

@@ -1,3 +1,5 @@
+import * as dotenv from "dotenv";
+dotenv.config();
 import "reflect-metadata";
 import express, { Request, Response, NextFunction } from "express";
 import bodyParser from "body-parser";

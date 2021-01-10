@@ -1,10 +1,14 @@
-// import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
+import { User } from "./User";
 
-// @Entity()
-// export class User {
-//   @PrimaryGeneratedColumn()
-//   id!: number;
+@Entity()
+export class Bot {
+  @PrimaryGeneratedColumn()
+  id!: number;
 
-//   @Column()
-//   botjson!: string;
-// }
+  @Column()
+  botjson!: string;
+
+  @ManyToOne((type) => User, (user) => user.bots)
+  user!: User;
+}
