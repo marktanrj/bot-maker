@@ -1,7 +1,8 @@
 import React, { ReactElement } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { createNewBotFromScratch } from "../../store/slices/builderSlice";
+import { defaultBotTemplate } from "../../defaultvalues/botTemplates";
+import { createBot } from "../../store/slices/builderSlice";
 import BotCard from "./BotCard";
 import TemplateCard from "./TemplateCard";
 
@@ -25,7 +26,7 @@ export default function DashboardPage(): ReactElement {
   const dispatch = useDispatch();
 
   const handleCreateNewBot = () => {
-    dispatch(createNewBotFromScratch());
+    dispatch(createBot({ builderData: defaultBotTemplate }));
     history.push("/builder");
   };
 

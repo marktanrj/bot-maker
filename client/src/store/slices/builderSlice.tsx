@@ -4,31 +4,40 @@ import _ from "lodash";
 import { v4 as uuidv4 } from "uuid";
 
 import { serverURL } from "../../config/config";
+import { defaultBotTemplate, emptyPage } from "../../defaultvalues/botTemplates";
 import { defaultButtonBlocks, defaultInvokerBlocks } from "../../defaultvalues/defaultvalues";
 import { NodeType } from "../../types";
+import { RootState } from "../store";
 
-const builderDataInitState: NodeType[] = [
-  {
-    id: "main",
-    name: "Main",
-    content: {
-      type: "text",
-      settings: {
-        text: "Welcome to bot!",
-      },
-    },
-    invokers: [
-      {
-        id: "start",
-        type: "command",
-        settings: {
-          command: "start",
-        },
-      },
-    ],
-    buttons: [],
-  },
-];
+export const createBot = createAsyncThunk(
+  "builderReducer/createBot",
+  async (payload: { builderData: NodeType[] }, { rejectWithValue, getState }) => {
+    // state.builderData = builderDataInitState;
+    // state.botName = "Untitled";
+
+    const state = getState() as RootState;
+    const endpoint = new URL("/bot/create", serverURL);
+    const token: string = _.get(state, "userReducer.user.token", "");
+    try {
+      const response = await axios.post(
+        endpoint.href,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      let errorMessage = _.get(error, "response.data.errors[0]", "");
+      if (!errorMessage) {
+        errorMessage = _.get(error, "message", "Please try again!");
+      }
+      return rejectWithValue(errorMessage);
+    }
+  }
+);
 
 // export const saveBot = createAsyncThunk("builderReducer/saveBot", async (__, { rejectWithValue, getState }) => {
 //   const state = getState() as any;
@@ -51,7 +60,7 @@ export const buildBot = createAsyncThunk("builderReducer/buildBot", async (__, {
   const endpoint = new URL("/bot/build", serverURL);
   const botData = state.builderReducer.builderData;
   const botName = state.builderReducer.botName;
-  const botToken = state.builderReducer.token;
+  const botToken = state.builderReducer.botToken;
   try {
     const response = await axios.post(endpoint.href, {
       botData,
@@ -72,34 +81,20 @@ export const builderSlice = createSlice({
   name: "builderReducer",
   initialState: {
     selectedPageId: "main",
-    builderData: builderDataInitState,
+    builderData: defaultBotTemplate,
     botName: "",
-    token: "",
+    botToken: "",
+    loadingCreateBot: false,
   },
   reducers: {
-    createNewBotFromScratch: (state) => {
-      state.builderData = builderDataInitState;
-      state.botName = "Untitled";
-    },
     updateBotName: (state, action) => {
       state.botName = action.payload;
     },
     updateToken: (state, action) => {
-      state.token = action.payload;
+      state.botToken = action.payload;
     },
     addPage: (state) => {
-      state.builderData.push({
-        id: uuidv4(),
-        name: `Untitled`,
-        content: {
-          type: "text",
-          settings: {
-            text: "",
-          },
-        },
-        invokers: [],
-        buttons: [],
-      });
+      state.builderData.push({ ...emptyPage, id: uuidv4() });
     },
     updateAllPage: (state, action) => {
       state.builderData = action.payload;
@@ -128,10 +123,20 @@ export const builderSlice = createSlice({
       itemToChange.buttons.push({ ...defaultButtonBlocks.page, id: uuidv4() });
     },
   },
+  extraReducers: (builder) => {
+    builder.addCase(createBot.pending, (state, action) => {
+      state.loadingCreateBot = true;
+    });
+    builder.addCase(createBot.fulfilled, (state, action) => {
+      state.loadingCreateBot = false;
+    });
+    builder.addCase(createBot.rejected, (state, action) => {
+      state.loadingCreateBot = false;
+    });
+  },
 });
 
 export const {
-  createNewBotFromScratch,
   updateBotName,
   updateToken,
   addPage,
