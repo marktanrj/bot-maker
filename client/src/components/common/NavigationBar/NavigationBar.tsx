@@ -1,6 +1,6 @@
-import React, { ReactElement, useState } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { Link as RouterLink, useHistory } from "react-router-dom";
+import { Link as RouterLink, useHistory, useLocation } from "react-router-dom";
 
 import { signOutUser } from "../../../store/slices/userSlice";
 import "./NavigationBar.css";
@@ -14,8 +14,13 @@ const selected =
 export default function NavigationBar({}: Props): ReactElement {
   const history = useHistory();
   const dispatch = useDispatch();
+  const location = useLocation();
 
   const [selectedRoute, setSelectedRoute] = useState("/dashboard");
+
+  useEffect(() => {
+    setSelectedRoute(location.pathname);
+  }, [location]);
 
   const handleSelectMenu = (route: string) => {
     setSelectedRoute(route);
