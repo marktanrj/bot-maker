@@ -23,8 +23,7 @@ function App() {
     <div className="bg-gray-200 min-h-screen">
       <ToastComponent />
       <Router>
-        {isLoggedInCheck() && <NavigationBar />}
-        {isLoggedInCheck() && <Redirect to="/dashboard" />}
+        <PrivateRoute component={NavigationBar} />
         <Suspense fallback={<div>Loading...</div>}>
           <Switch>
             <Route exact path="/" render={() => (isLoggedInCheck() ? <Redirect to="/dashboard" /> : <Redirect to="/signin" />)} />

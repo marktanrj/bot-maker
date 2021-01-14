@@ -13,10 +13,10 @@ const PrivateRoute: React.FC<Props> = ({ component: Component, ...rest }) => {
   const dispatch = useDispatch();
 
   // useEffect(() => {
-  //   dispatch(autoSignInUser());
+  // dispatch(autoSignInUser());
   // }, []);
 
-  return <Route {...rest} render={(props) => (!!isLoggedInCheck() ? <Component {...props} /> : <Redirect to="/signin" />)} />;
+  return <Route {...rest} render={(props) => (isLoggedInCheck() ? <Component {...props} /> : <Redirect to="/" />)} />;
 };
 
 export default PrivateRoute;
