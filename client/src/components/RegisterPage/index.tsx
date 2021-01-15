@@ -6,8 +6,9 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { registerUser } from "../../store/slices/userSlice";
 import { setToast } from "../../store/slices/toastSlice";
-import { RootState } from "../../store/store";
+import { RootState, useAppDispatch } from "../../store/store";
 import SpinnerComponent from "../Common/SpinnerComponent";
+import { unwrapResult } from "@reduxjs/toolkit";
 
 interface RegisterFormValues {
   username: string;
@@ -24,7 +25,7 @@ const RegisterSchema = Yup.object().shape({
 });
 
 export default function RegisterPage() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const history = useHistory();
 
   const initialValues: RegisterFormValues = { username: "", email: "", password: "", confirmPassword: "" };
@@ -32,12 +33,12 @@ export default function RegisterPage() {
   const loadingRegister = useSelector((state: RootState) => state.userReducer.loadingRegister);
 
   const onSubmit = async ({ username, email, password }: RegisterFormValues) => {
-    const response: any = await dispatch(registerUser({ username, email, password }));
-    if (response.error) {
-      dispatch(setToast({ type: "error", message: response.payload }));
-    } else {
+    try {
+      const response = await dispatch(registerUser({ username, email, password })).then(unwrapResult);
       dispatch(setToast({ type: "success", message: "Account created" }));
       history.push("/");
+    } catch (err) {
+      dispatch(setToast({ type: "error", message: err }));
     }
   };
 

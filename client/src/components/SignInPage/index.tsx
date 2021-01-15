@@ -4,10 +4,11 @@ import * as Yup from "yup";
 import { Link, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
-import { RootState } from "../../store/store";
+import { RootState, useAppDispatch } from "../../store/store";
 import { setToast } from "../../store/slices/toastSlice";
 import { signInUser } from "../../store/slices/userSlice";
 import SpinnerComponent from "../Common/SpinnerComponent";
+import { unwrapResult } from "@reduxjs/toolkit";
 
 interface SignInFormValues {
   identifier: string;
@@ -20,7 +21,7 @@ const SignInSchema = Yup.object().shape({
 });
 
 export default function SignInPage() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const history = useHistory();
 
   const initialValues: SignInFormValues = { identifier: "", password: "" };
@@ -28,11 +29,11 @@ export default function SignInPage() {
   const loadingSignIn = useSelector((state: RootState) => state.userReducer.loadingSignIn);
 
   const onSubmit = async ({ identifier, password }: SignInFormValues) => {
-    const response: any = await dispatch(signInUser({ identifier, password }));
-    if (response.error) {
-      dispatch(setToast({ type: "error", message: response.payload }));
-    } else {
+    try {
+      const response = await dispatch(signInUser({ identifier, password })).then(unwrapResult);
       history.push("/dashboard");
+    } catch (err) {
+      dispatch(setToast({ type: "error", message: err }));
     }
   };
 
