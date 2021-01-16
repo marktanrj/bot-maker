@@ -47,8 +47,8 @@ export const userSlice = createSlice({
   },
   reducers: {
     signOutUser: (state) => {
-      state.user = undefined;
       localStorage.removeItem("user");
+      state.user = undefined;
     },
   },
   extraReducers: (builder) => {

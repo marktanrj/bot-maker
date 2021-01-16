@@ -1,11 +1,19 @@
 import { NextFunction, Request, Response } from "express";
+import { fromPairs } from "lodash";
 import { getConnection } from "typeorm";
 import botmaker from "../../botmaker/logic/main";
 import { Bot } from "../../entity/Bot";
 
 export const create = async (req: Request, res: Response, next: NextFunction): Promise<void | Response> => {
+  const { botData } = req.body;
   const repository = await getConnection().getRepository(Bot);
-  // let bot = new Bot({ botjson: "" });
+
+  const bot = new Bot();
+  bot.jsonData = JSON.stringify(botData);
+  bot.user = req.body.user;
+  await repository.save(bot);
+
+  return res.status(200).json({ id: bot.id, botData: botData });
 };
 
 export const save = async (req: Request, res: Response, next: NextFunction): Promise<void | Response> => {

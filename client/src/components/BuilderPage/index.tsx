@@ -1,13 +1,17 @@
 import React, { ReactElement, useEffect, useState } from "react";
 import _ from "lodash";
+import { useSelector } from "react-redux";
 
 import PagePanel from "./PagePanel";
 import SettingsPanel from "./SettingsPanel";
 import PreviewPanel from "./PreviewPanel";
 import BotTitle from "./BotTitle";
 import Configuration from "./Configuration";
+import { RootState } from "../../store/store";
 
 export default function BuilderPage(): ReactElement {
+  const loadingCreateBot = useSelector((state: RootState) => state.builderReducer.loadingCreateBot);
+
   return (
     <div className="grid justify-items-center">
       <div className="min-h-screen pt-16 w-full xl:w-3/4 p-10 pt-20">

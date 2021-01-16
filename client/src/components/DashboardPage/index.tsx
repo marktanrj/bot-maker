@@ -3,8 +3,11 @@ import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { defaultBotTemplate } from "../../defaultvalues/botTemplates";
 import { createBot } from "../../store/slices/builderSlice";
+import { unwrapResult } from "@reduxjs/toolkit";
 import BotCard from "./BotCard";
 import TemplateCard from "./TemplateCard";
+import { useAppDispatch } from "../../store/store";
+import { setToast } from "../../store/slices/toastSlice";
 
 const mybots = [
   {
@@ -23,11 +26,15 @@ const mybots = [
 
 export default function DashboardPage(): ReactElement {
   const history = useHistory();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const handleCreateNewBot = () => {
-    dispatch(createBot({ builderData: defaultBotTemplate }));
-    history.push("/builder");
+  const handleCreateNewBot = async () => {
+    try {
+      const res = await dispatch(createBot({ builderData: defaultBotTemplate })).then(unwrapResult);
+      history.push("/builder");
+    } catch (err) {
+      dispatch(setToast({ type: "error", message: err }));
+    }
   };
 
   return (

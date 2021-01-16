@@ -12,16 +12,13 @@ import { RootState } from "../store";
 export const createBot = createAsyncThunk(
   "builderReducer/createBot",
   async (payload: { builderData: NodeType[] }, { rejectWithValue, getState }) => {
-    // state.builderData = builderDataInitState;
-    // state.botName = "Untitled";
-
     const state = getState() as RootState;
     const endpoint = new URL("/bot/create", serverURL);
     const token: string = _.get(state, "userReducer.user.token", "");
     try {
       const response = await axios.post(
         endpoint.href,
-        {},
+        { botData: payload.builderData },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -77,15 +74,27 @@ export const buildBot = createAsyncThunk("builderReducer/buildBot", async (__, {
   }
 });
 
+interface initialStateInterface {
+  selectedPageId: string;
+  builderData: NodeType[];
+  botId: number;
+  botName: string;
+  botToken: string;
+  loadingCreateBot: boolean;
+}
+
+const initialState: initialStateInterface = {
+  selectedPageId: "main",
+  builderData: [],
+  botId: 0,
+  botName: "",
+  botToken: "",
+  loadingCreateBot: false,
+};
+
 export const builderSlice = createSlice({
   name: "builderReducer",
-  initialState: {
-    selectedPageId: "main",
-    builderData: defaultBotTemplate,
-    botName: "",
-    botToken: "",
-    loadingCreateBot: false,
-  },
+  initialState: initialState,
   reducers: {
     updateBotName: (state, action) => {
       state.botName = action.payload;
@@ -129,6 +138,8 @@ export const builderSlice = createSlice({
     });
     builder.addCase(createBot.fulfilled, (state, action) => {
       state.loadingCreateBot = false;
+      state.builderData = action.payload.botData;
+      state.botId = action.payload.id;
     });
     builder.addCase(createBot.rejected, (state, action) => {
       state.loadingCreateBot = false;

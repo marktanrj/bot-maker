@@ -37,7 +37,7 @@ export default function Configuration(): ReactElement {
       <div className="col-span-12">
         <button
           onClick={onHandleSaveClick}
-          className="w-32 mt-2 p-2 font-semibold rounded-md text-white bg-green-500 hover:bg-red-600 transition ease-out duration-500 transform hover:scale-105"
+          className="w-32 mt-2 p-2 font-semibold rounded-md text-white bg-green-500 hover:bg-green-600 transition ease-out duration-500 transform hover:scale-105"
         >
           Save
         </button>

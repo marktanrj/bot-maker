@@ -7,7 +7,7 @@ export class Bot {
   id!: number;
 
   @Column()
-  botjson!: string;
+  jsonData!: string;
 
   @ManyToOne((type) => User, (user) => user.bots)
   user!: User;

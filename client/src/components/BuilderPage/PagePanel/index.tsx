@@ -15,7 +15,7 @@ export default function PagePanel(): ReactElement {
   const [pages, setPages] = useState(builderData);
 
   useEffect(() => {
-    if (builderData.length > 0) {
+    if (builderData && builderData.length > 0) {
       setPages(_.cloneDeep(builderData));
     }
   }, [builderData]);
