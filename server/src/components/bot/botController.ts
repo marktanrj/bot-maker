@@ -63,6 +63,24 @@ export const build = async (req: Request, res: Response, next: NextFunction): Pr
   return res.sendStatus(200);
 };
 
+export const deleteBot = async (req: Request, res: Response, next: NextFunction): Promise<void | Response> => {
+  const { botId } = req.body;
+  const user = req.body.user;
+
+  try {
+    const repository = await getConnection().getRepository(Bot);
+    const bot = await repository.findOne({ id: botId }, { relations: ["user"] });
+    if (bot.user.id !== user.id) {
+      return res.status(401).json({ message: "Unauthorized to delete bot" });
+    }
+    await repository.delete(botId);
+  } catch (err) {
+    return res.status(404).json({ message: "Error deleting bot" });
+  }
+
+  return res.sendStatus(200);
+};
+
 export const getBotsList = async (req: Request, res: Response, next: NextFunction): Promise<void | Response> => {
   const botRepository = await getConnection().getRepository(Bot);
   const user = req.body.user;

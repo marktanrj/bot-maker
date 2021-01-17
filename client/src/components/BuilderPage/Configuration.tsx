@@ -1,18 +1,19 @@
 import React, { ReactElement, useCallback, useEffect, useState } from "react";
 import _ from "lodash";
-import { buildBot, saveBot, updateToken } from "../../store/slices/builderSlice";
+import { buildBot, deleteBot, saveBot, updateToken } from "../../store/slices/builderSlice";
 import { RootState, useAppDispatch } from "../../store/store";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { setToast } from "../../store/slices/toastSlice";
 import { useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 
 export default function Configuration(): ReactElement {
+  const history = useHistory();
   const dispatch = useAppDispatch();
 
   const storeBotToken = useSelector((state: RootState) => state.builderReducer.botToken);
 
   const [token, setToken] = useState("");
-  // const [tempToken, setTempToken] = useState("")
 
   useEffect(() => {
     if (storeBotToken) {
@@ -42,8 +43,21 @@ export default function Configuration(): ReactElement {
     }
   };
 
-  const onHandleBuildClick = () => {
-    dispatch(buildBot());
+  const onHandleBuildClick = async () => {
+    try {
+      await dispatch(buildBot()).then(unwrapResult);
+    } catch (err) {
+      dispatch(setToast({ type: "error", message: err }));
+    }
+  };
+
+  const onHandleDeleteClick = async () => {
+    try {
+      await dispatch(deleteBot()).then(unwrapResult);
+      history.push("/dashboard");
+    } catch (err) {
+      dispatch(setToast({ type: "error", message: err }));
+    }
   };
 
   return (
@@ -64,6 +78,12 @@ export default function Configuration(): ReactElement {
           className="w-32 mt-2 ml-2 p-2 font-semibold rounded-md text-white bg-red-500 hover:bg-red-600 transition ease-out duration-500 transform hover:scale-105"
         >
           Build
+        </button>
+        <button
+          onClick={onHandleDeleteClick}
+          className="w-32 mt-2 ml-2 p-2 font-semibold rounded-md text-white bg-gray-500 hover:bg-gray-600 transition ease-out duration-500 transform hover:scale-105"
+        >
+          Delete
         </button>
       </div>
     </div>

@@ -121,6 +121,33 @@ export const buildBot = createAsyncThunk("builderReducer/buildBot", async (__, {
   }
 });
 
+export const deleteBot = createAsyncThunk("builderReducer/deleteBot", async (__, { rejectWithValue, getState }) => {
+  const state = getState() as any;
+  const endpoint = new URL("/bot/deleteBot", serverURL);
+  const token: string = _.get(state, "userReducer.user.token", "");
+  const botId = state.builderReducer.botId;
+  try {
+    const response = await axios.post(
+      endpoint.href,
+      {
+        botId,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    let errorMessage = _.get(error, "response.data.errors[0]", "");
+    if (!errorMessage) {
+      errorMessage = _.get(error, "message", "Please try again!");
+    }
+    return rejectWithValue(errorMessage);
+  }
+});
+
 export const getBotsList = createAsyncThunk("builderReducer/getBotsList", async (__, { rejectWithValue, getState }) => {
   const state = getState() as any;
   const endpoint = new URL("/bot/getBotsList", serverURL);
@@ -152,6 +179,7 @@ interface initialStateInterface {
   loadingSaveBot: boolean;
   loadingLoadBot: boolean;
   loadingBuildBot: boolean;
+  loadingDeleteBot: boolean;
   loadingGetBotsList: boolean;
 }
 
@@ -166,6 +194,7 @@ const initialState: initialStateInterface = {
   loadingSaveBot: false,
   loadingLoadBot: false,
   loadingBuildBot: false,
+  loadingDeleteBot: false,
   loadingGetBotsList: false,
 };
 
@@ -251,6 +280,16 @@ export const builderSlice = createSlice({
     });
     builder.addCase(buildBot.rejected, (state, action) => {
       state.loadingBuildBot = false;
+    });
+    builder.addCase(deleteBot.pending, (state, action) => {
+      state.loadingDeleteBot = true;
+    });
+    builder.addCase(deleteBot.fulfilled, (state, action) => {
+      state.loadingDeleteBot = false;
+      state = initialState;
+    });
+    builder.addCase(deleteBot.rejected, (state, action) => {
+      state.loadingDeleteBot = false;
     });
     builder.addCase(getBotsList.pending, (state, action) => {
       state.loadingGetBotsList = true;
