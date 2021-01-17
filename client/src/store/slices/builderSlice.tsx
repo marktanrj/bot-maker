@@ -246,6 +246,8 @@ export const builderSlice = createSlice({
       state.loadingCreateBot = false;
       state.builderData = action.payload.botData;
       state.botId = action.payload.id;
+      state.botName = "";
+      state.botToken = "";
     });
     builder.addCase(createBot.rejected, (state, action) => {
       state.loadingCreateBot = false;

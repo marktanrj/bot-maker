@@ -13,7 +13,7 @@ export default function BotTitle(): ReactElement {
   const storeBotName = useSelector((state: RootState) => state.builderReducer.botName);
 
   useEffect(() => {
-    if (storeBotName) {
+    if (storeBotName !== undefined) {
       setBotName(storeBotName);
     }
   }, [storeBotName]);

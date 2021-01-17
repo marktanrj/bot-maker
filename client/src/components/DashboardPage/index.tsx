@@ -40,9 +40,12 @@ export default function DashboardPage(): ReactElement {
 
         <div className="grid grid-cols-12 gap-6">
           {botsList.length > 0 &&
-            botsList.map((bot) => {
-              return <BotCard key={bot.id} bot={bot} />;
-            })}
+            botsList
+              .slice()
+              .sort((a, b) => a.createdDate - b.createdDate)
+              .map((bot) => {
+                return <BotCard key={bot.id} bot={bot} />;
+              })}
           <PlusCard />
         </div>
       </div>
