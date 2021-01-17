@@ -6,6 +6,8 @@ const router = express.Router();
 
 router.post("/create", authenticateUser, botController.create);
 router.post("/save", authenticateUser, botController.save);
-router.post("/build", authenticateUser, botController.build);
+router.get("/load", authenticateUser, botController.load);
+router.post("/build", authenticateUser, botController.save, botController.build);
+router.get("/getBotsList", authenticateUser, botController.getBotsList);
 
 export default router;

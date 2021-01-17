@@ -1,32 +1,20 @@
-import React, { ReactElement } from "react";
-import { useDispatch } from "react-redux";
+import React, { ReactElement, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { defaultBotTemplate } from "../../defaultvalues/botTemplates";
-import { createBot } from "../../store/slices/builderSlice";
+import { createBot, getBotsList } from "../../store/slices/builderSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import BotCard from "./BotCard";
 import TemplateCard from "./TemplateCard";
-import { useAppDispatch } from "../../store/store";
+import { RootState, useAppDispatch } from "../../store/store";
 import { setToast } from "../../store/slices/toastSlice";
-
-const mybots = [
-  {
-    id: "1",
-    name: "test",
-    created: "24-july-2020",
-    modified: "26-july-2020",
-  },
-  {
-    id: "2",
-    name: "test2",
-    created: "24-july-2020",
-    modified: "26-july-2020",
-  },
-];
+import { useSelector } from "react-redux";
+import PlusCard from "./PlusCard";
 
 export default function DashboardPage(): ReactElement {
   const history = useHistory();
   const dispatch = useAppDispatch();
+
+  const botsList = useSelector((state: RootState) => state.builderReducer.botsList);
 
   const handleCreateNewBot = async () => {
     try {
@@ -36,6 +24,18 @@ export default function DashboardPage(): ReactElement {
       dispatch(setToast({ type: "error", message: err }));
     }
   };
+
+  const handleGetBotsList = async () => {
+    try {
+      const res = await dispatch(getBotsList()).then(unwrapResult);
+    } catch (err) {
+      dispatch(setToast({ type: "error", message: err }));
+    }
+  };
+
+  useEffect(() => {
+    handleGetBotsList();
+  }, []);
 
   return (
     <div className="pt-24 grid justify-items-center">
@@ -49,24 +49,11 @@ export default function DashboardPage(): ReactElement {
         <div className="text-2xl font-bold my-4">My Bots</div>
 
         <div className="grid grid-cols-12 gap-6">
-          {mybots.map((bot) => {
-            return <BotCard key={bot.id} bot={bot} />;
-          })}
-          <div
-            onClick={() => handleCreateNewBot()}
-            className="md:col-span-4 xl:col-span-3 bg-gray-400 hover:bg-gray-500 rounded-2xl h-32 p-3 transition ease-out duration-500 transform hover:scale-105 cursor-pointer grid"
-          >
-            <svg
-              className="place-self-center opacity-50"
-              width="60px"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-            </svg>
-          </div>
+          {botsList.length > 0 &&
+            botsList.map((bot) => {
+              return <BotCard key={bot.id} bot={bot} />;
+            })}
+          <PlusCard handleCreateNewBot={handleCreateNewBot} />
         </div>
       </div>
     </div>

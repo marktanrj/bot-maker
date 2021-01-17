@@ -36,33 +36,100 @@ export const createBot = createAsyncThunk(
   }
 );
 
-// export const saveBot = createAsyncThunk("builderReducer/saveBot", async (__, { rejectWithValue, getState }) => {
-//   const state = getState() as any;
-//   const endpoint = new URL("/bot/save", serverURL);
-//   const data = state.builderReducer.builderData;
-//   try {
-//     const response = await axios.post(endpoint.href, data);
-//     return response.data;
-//   } catch (error) {
-//     let errorMessage = _.get(error, "response.data.errors[0]", "");
-//     if (!errorMessage) {
-//       errorMessage = _.get(error, "message", "Please try again!");
-//     }
-//     return rejectWithValue(errorMessage);
-//   }
-// });
+export const saveBot = createAsyncThunk("builderReducer/saveBot", async (__, { rejectWithValue, getState }) => {
+  const state = getState() as RootState;
+  const endpoint = new URL("/bot/save", serverURL);
+  const token: string = _.get(state, "userReducer.user.token", "");
+  const botData = state.builderReducer.builderData;
+  const botName = state.builderReducer.botName;
+  const botId = state.builderReducer.botId;
+  const botToken = state.builderReducer.botToken;
+  try {
+    const response = await axios.post(
+      endpoint.href,
+      { botData, botId, botName, botToken },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    let errorMessage = _.get(error, "response.data.errors[0]", "");
+    if (!errorMessage) {
+      errorMessage = _.get(error, "message", "Please try again!");
+    }
+    return rejectWithValue(errorMessage);
+  }
+});
+
+export const loadBot = createAsyncThunk("builderReducer/loadBot", async (payload: { botId: number }, { rejectWithValue, getState }) => {
+  const state = getState() as RootState;
+  const endpoint = new URL("/bot/load", serverURL);
+  const token: string = _.get(state, "userReducer.user.token", "");
+  const { botId } = payload;
+  try {
+    const response = await axios.get(endpoint.href, {
+      params: {
+        botId,
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    let errorMessage = _.get(error, "response.data.errors[0]", "");
+    if (!errorMessage) {
+      errorMessage = _.get(error, "message", "Please try again!");
+    }
+    return rejectWithValue(errorMessage);
+  }
+});
 
 export const buildBot = createAsyncThunk("builderReducer/buildBot", async (__, { rejectWithValue, getState }) => {
   const state = getState() as any;
   const endpoint = new URL("/bot/build", serverURL);
+  const token: string = _.get(state, "userReducer.user.token", "");
   const botData = state.builderReducer.builderData;
   const botName = state.builderReducer.botName;
   const botToken = state.builderReducer.botToken;
+  const botId = state.builderReducer.botId;
   try {
-    const response = await axios.post(endpoint.href, {
-      botData,
-      botName,
-      botToken,
+    const response = await axios.post(
+      endpoint.href,
+      {
+        botData,
+        botName,
+        botToken,
+        botId,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    let errorMessage = _.get(error, "response.data.errors[0]", "");
+    if (!errorMessage) {
+      errorMessage = _.get(error, "message", "Please try again!");
+    }
+    return rejectWithValue(errorMessage);
+  }
+});
+
+export const getBotsList = createAsyncThunk("builderReducer/getBotsList", async (__, { rejectWithValue, getState }) => {
+  const state = getState() as any;
+  const endpoint = new URL("/bot/getBotsList", serverURL);
+  const token: string = _.get(state, "userReducer.user.token", "");
+  try {
+    const response = await axios.get(endpoint.href, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
     return response.data;
   } catch (error) {
@@ -80,7 +147,12 @@ interface initialStateInterface {
   botId: number;
   botName: string;
   botToken: string;
+  botsList: any[];
   loadingCreateBot: boolean;
+  loadingSaveBot: boolean;
+  loadingLoadBot: boolean;
+  loadingBuildBot: boolean;
+  loadingGetBotsList: boolean;
 }
 
 const initialState: initialStateInterface = {
@@ -89,7 +161,12 @@ const initialState: initialStateInterface = {
   botId: 0,
   botName: "",
   botToken: "",
+  botsList: [],
   loadingCreateBot: false,
+  loadingSaveBot: false,
+  loadingLoadBot: false,
+  loadingBuildBot: false,
+  loadingGetBotsList: false,
 };
 
 export const builderSlice = createSlice({
@@ -143,6 +220,48 @@ export const builderSlice = createSlice({
     });
     builder.addCase(createBot.rejected, (state, action) => {
       state.loadingCreateBot = false;
+    });
+    builder.addCase(saveBot.pending, (state, action) => {
+      state.loadingSaveBot = true;
+    });
+    builder.addCase(saveBot.fulfilled, (state, action) => {
+      state.loadingSaveBot = false;
+    });
+    builder.addCase(saveBot.rejected, (state, action) => {
+      state.loadingSaveBot = false;
+    });
+    builder.addCase(loadBot.pending, (state, action) => {
+      state.loadingLoadBot = true;
+    });
+    builder.addCase(loadBot.fulfilled, (state, action) => {
+      state.loadingLoadBot = false;
+      state.builderData = action.payload.botData;
+      state.botName = action.payload.botName;
+      state.botId = action.payload.botId;
+      state.botToken = action.payload.botToken;
+    });
+    builder.addCase(loadBot.rejected, (state, action) => {
+      state.loadingLoadBot = false;
+    });
+    builder.addCase(buildBot.pending, (state, action) => {
+      state.loadingBuildBot = true;
+    });
+    builder.addCase(buildBot.fulfilled, (state, action) => {
+      state.loadingBuildBot = false;
+    });
+    builder.addCase(buildBot.rejected, (state, action) => {
+      state.loadingBuildBot = false;
+    });
+    builder.addCase(getBotsList.pending, (state, action) => {
+      state.loadingGetBotsList = true;
+    });
+    builder.addCase(getBotsList.fulfilled, (state, action) => {
+      state.loadingGetBotsList = false;
+      state.botsList = action.payload;
+    });
+    builder.addCase(getBotsList.rejected, (state, action) => {
+      state.loadingGetBotsList = false;
+      console.log(action);
     });
   },
 });

@@ -1,17 +1,30 @@
-import React, { ReactElement, useCallback, useState } from "react";
+import React, { ReactElement, useCallback, useEffect, useState } from "react";
 import _ from "lodash";
-import { useDispatch } from "react-redux";
-import { buildBot, updateToken } from "../../store/slices/builderSlice";
+import { buildBot, saveBot, updateToken } from "../../store/slices/builderSlice";
+import { RootState, useAppDispatch } from "../../store/store";
+import { unwrapResult } from "@reduxjs/toolkit";
+import { setToast } from "../../store/slices/toastSlice";
+import { useSelector } from "react-redux";
 
 export default function Configuration(): ReactElement {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
+
+  const storeBotToken = useSelector((state: RootState) => state.builderReducer.botToken);
 
   const [token, setToken] = useState("");
+  // const [tempToken, setTempToken] = useState("")
+
+  useEffect(() => {
+    if (storeBotToken) {
+      setToken(storeBotToken);
+    }
+  }, []);
 
   const debouceToken = useCallback(
     _.debounce((tokenVal) => {
       dispatch(updateToken(tokenVal));
-    }, 200),
+      console.log(tokenVal);
+    }, 100),
     []
   );
 
@@ -20,8 +33,13 @@ export default function Configuration(): ReactElement {
     debouceToken(newValue);
   };
 
-  const onHandleSaveClick = () => {
-    dispatch(buildBot());
+  const onHandleSaveClick = async () => {
+    try {
+      await dispatch(saveBot()).then(unwrapResult);
+      dispatch(setToast({ type: "success", message: "Bot Saved!" }));
+    } catch (err) {
+      dispatch(setToast({ type: "error", message: err }));
+    }
   };
 
   const onHandleBuildClick = () => {
