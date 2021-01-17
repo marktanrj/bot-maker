@@ -24,7 +24,6 @@ export default function Configuration(): ReactElement {
   const debouceToken = useCallback(
     _.debounce((tokenVal) => {
       dispatch(updateToken(tokenVal));
-      console.log(tokenVal);
     }, 100),
     []
   );
