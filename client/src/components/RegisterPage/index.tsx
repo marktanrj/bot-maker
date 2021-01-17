@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { registerUser } from "../../store/slices/userSlice";
 import { setToast } from "../../store/slices/toastSlice";
 import { RootState, useAppDispatch } from "../../store/store";
-import SpinnerComponent from "../Common/SpinnerComponent";
+import SpinnerComponent from "../CommonComponents/SpinnerComponent";
 import { unwrapResult } from "@reduxjs/toolkit";
 
 interface RegisterFormValues {

@@ -1,13 +1,13 @@
 import React, { Suspense, useEffect } from "react";
 import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
 
-import PrivateRoute from "../Common/PrivateRoute";
-import ToastComponent from "../Common/ToastComponent";
+import PrivateRoute from "../CommonComponents/PrivateRoute";
+import ToastComponent from "../CommonComponents/ToastComponent";
 import isLoggedInCheck from "../../utils/isLoggedInCheck";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
 
-import NavigationBar from "../Common/NavigationBar/NavigationBar";
+import NavigationBar from "../CommonComponents/NavigationBar/NavigationBar";
 const SignInPage = React.lazy(() => import("../SignInPage"));
 const RegisterPage = React.lazy(() => import("../RegisterPage"));
 const NotFoundPage = React.lazy(() => import("../NotFoundPage"));

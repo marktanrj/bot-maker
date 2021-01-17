@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "../../store/store";
 import { setToast } from "../../store/slices/toastSlice";
 import { signInUser } from "../../store/slices/userSlice";
-import SpinnerComponent from "../Common/SpinnerComponent";
+import SpinnerComponent from "../CommonComponents/SpinnerComponent";
 import { unwrapResult } from "@reduxjs/toolkit";
 
 interface SignInFormValues {
