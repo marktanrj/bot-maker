@@ -4,9 +4,10 @@ import _ from "lodash";
 import { v4 as uuidv4 } from "uuid";
 
 import { serverURL } from "../../config/config";
-import { defaultBotTemplate, emptyPage } from "../../defaultvalues/botTemplates";
+import { emptyPage } from "../../defaultvalues/botTemplates";
 import { defaultButtonBlocks, defaultInvokerBlocks } from "../../defaultvalues/defaultvalues";
 import { NodeType } from "../../types";
+import { downloadZipFile } from "../../utils/downloadbase64ZipFile";
 import { RootState } from "../store";
 
 export const createBot = createAsyncThunk(
@@ -111,6 +112,7 @@ export const buildBot = createAsyncThunk("builderReducer/buildBot", async (__, {
         },
       }
     );
+
     return response.data;
   } catch (error) {
     let errorMessage = _.get(error, "response.data.errors[0]", "");
@@ -279,6 +281,8 @@ export const builderSlice = createSlice({
     });
     builder.addCase(buildBot.fulfilled, (state, action) => {
       state.loadingBuildBot = false;
+      const { fileBase64, fileName } = action.payload;
+      downloadZipFile(fileBase64, fileName);
     });
     builder.addCase(buildBot.rejected, (state, action) => {
       state.loadingBuildBot = false;
