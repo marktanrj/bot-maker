@@ -56,11 +56,15 @@ export const load = async (req: Request, res: Response, next: NextFunction): Pro
 
 export const build = async (req: Request, res: Response, next: NextFunction): Promise<void | Response> => {
   const { botData, botName, botToken } = req.body;
-  // const repository = await getConnection().getRepository(User);
 
-  const file = botmaker({ botData, botName, botToken });
-  console.log(file);
-  return res.sendStatus(200);
+  const fileName = botName.split(" ").join("_");
+
+  try {
+    const fileBase64 = await botmaker({ botData, botToken });
+    res.send({ fileBase64, fileName });
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 export const deleteBot = async (req: Request, res: Response, next: NextFunction): Promise<void | Response> => {

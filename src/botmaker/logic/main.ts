@@ -16,11 +16,10 @@ import { mapPageIdToFunction } from "./mapPageIdToFunction";
 
 interface mainProps {
   botData: NodeType[];
-  botName: string;
   botToken: string;
 }
 
-export default ({ botData, botName, botToken }: mainProps): any => {
+export default async ({ botData, botToken }: mainProps): Promise<any> => {
   const pageIdToFunctionMap: { [id: string]: string } = mapPageIdToFunction(botData);
 
   const zip = new JSZip();
@@ -76,10 +75,14 @@ export default ({ botData, botName, botToken }: mainProps): any => {
   zip.file(`.env`, dotenvWithTokenText);
   zip.file(`package.json`, packageJsonText);
 
-  zip
-    .generateNodeStream({ type: "nodebuffer", streamFiles: true })
-    .pipe(fs.createWriteStream("out.zip"))
-    .on("finish", function () {
-      console.log("out.zip written.");
-    });
+  const fileBuffer = await zip.generateAsync({ type: "base64" });
+
+  return fileBuffer;
+
+  // zip
+  // .generateNodeStream({ type: "nodebuffer", streamFiles: true })
+  // .pipe(fs.createWriteStream("out.zip"))
+  // .on("finish", function () {
+  //   console.log("out.zip written.");
+  // });
 };
