@@ -50,6 +50,15 @@ export const userSlice = createSlice({
       localStorage.removeItem("user");
       state.user = undefined;
     },
+    autoSignInUser: (state) => {
+      try {
+        let user: any = localStorage.getItem("user");
+        user = JSON.parse(user);
+        if (user) {
+          state.user = user;
+        }
+      } catch (err) {}
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(registerUser.pending, (state, action) => {
@@ -75,6 +84,6 @@ export const userSlice = createSlice({
   },
 });
 
-export const { signOutUser } = userSlice.actions;
+export const { signOutUser, autoSignInUser } = userSlice.actions;
 
 export default userSlice.reducer;

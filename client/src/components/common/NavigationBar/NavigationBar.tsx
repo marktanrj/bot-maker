@@ -9,6 +9,7 @@ import { createBot } from "../../../store/slices/builderSlice";
 import { setToast } from "../../../store/slices/toastSlice";
 import { signOutUser } from "../../../store/slices/userSlice";
 import { useAppDispatch } from "../../../store/store";
+import _ from "lodash";
 
 const notSelected = "text-gray-300  hover:text-gray-800 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium cursor-pointer";
 const selected =
@@ -23,6 +24,12 @@ export default function NavigationBar(): ReactElement {
 
   useEffect(() => {
     setSelectedRoute(location.pathname);
+    const userDirectlyGoBuilderPath = location.pathname === "/builder" && history.action === "POP";
+    if (userDirectlyGoBuilderPath) {
+      _.defer(() => {
+        handleCreateNewBot();
+      });
+    }
   }, [location]);
 
   const handleCreateNewBot = async () => {
