@@ -8,17 +8,50 @@ export const create = async (req: Request, res: Response, next: NextFunction): P
   const { botData } = req.body;
   const repository = await getConnection().getRepository(Bot);
 
-  const bot = new Bot();
-  bot.jsonData = JSON.stringify(botData);
-  bot.user = req.body.user;
+  const bot = repository.create({
+    jsonData: JSON.stringify(botData),
+    user: req.body.user,
+    name: "",
+    token: "",
+  });
+
   await repository.save(bot);
 
   return res.status(200).json({ id: bot.id, botData: botData });
 };
 
 export const save = async (req: Request, res: Response, next: NextFunction): Promise<void | Response> => {
-  // const { identifier, password } = req.body;
-  // const repository = await getConnection().getRepository(User);
+  const { botData, botId, botName, botToken } = req.body;
+  const repository = await getConnection().getRepository(Bot);
+
+  const bot = await repository.createQueryBuilder("bot").where("bot.id = :id", { id: botId }).getOne();
+  if (bot) {
+    bot.jsonData = JSON.stringify(botData);
+    bot.name = botName;
+    bot.token = botToken;
+    await repository.save(bot);
+  } else {
+    return res.status(400).json({ message: "Bot does not exist" });
+  }
+
+  next();
+  return res.sendStatus(200);
+};
+
+export const load = async (req: Request, res: Response, next: NextFunction): Promise<void | Response> => {
+  const { botId } = req.query;
+  const repository = await getConnection().getRepository(Bot);
+
+  const bot = await repository.createQueryBuilder("bot").where("bot.id = :id", { id: botId }).getOne();
+  if (!bot) {
+    return res.status(400).json({ message: "Bot does not exist" });
+  }
+
+  const botData = JSON.parse(bot.jsonData);
+  const botName = bot.name;
+  const botToken = bot.token;
+
+  return res.status(200).json({ botData, botName, botId, botToken });
 };
 
 export const build = async (req: Request, res: Response, next: NextFunction): Promise<void | Response> => {
@@ -28,4 +61,22 @@ export const build = async (req: Request, res: Response, next: NextFunction): Pr
   const file = botmaker({ botData, botName, botToken });
   console.log(file);
   return res.sendStatus(200);
+};
+
+export const getBotsList = async (req: Request, res: Response, next: NextFunction): Promise<void | Response> => {
+  const botRepository = await getConnection().getRepository(Bot);
+  const user = req.body.user;
+
+  let bots;
+  try {
+    bots = await botRepository
+      .createQueryBuilder("bot")
+      .select(["bot.id", "bot.name", "bot.createdDate", "bot.updatedDate"])
+      .where("bot.user.id = :id", { id: user.id })
+      .getMany();
+  } catch (err) {
+    console.log(err);
+    return res.status(400).json({ message: "Error" });
+  }
+  return res.status(200).json(bots);
 };
