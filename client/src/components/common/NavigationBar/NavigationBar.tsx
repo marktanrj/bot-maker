@@ -1,19 +1,22 @@
+import { unwrapResult } from "@reduxjs/toolkit";
 import React, { ReactElement, useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
 import { Link as RouterLink, useHistory, useLocation } from "react-router-dom";
 
-import { signOutUser } from "../../../store/slices/userSlice";
 import "./NavigationBar.css";
 
-interface Props {}
+import { defaultBotTemplate } from "../../../defaultvalues/botTemplates";
+import { createBot } from "../../../store/slices/builderSlice";
+import { setToast } from "../../../store/slices/toastSlice";
+import { signOutUser } from "../../../store/slices/userSlice";
+import { useAppDispatch } from "../../../store/store";
 
 const notSelected = "text-gray-300  hover:text-gray-800 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium cursor-pointer";
 const selected =
   "text-gray-800 dark:text-white  hover:text-gray-800 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium cursor-pointer";
 
-export default function NavigationBar({}: Props): ReactElement {
+export default function NavigationBar(): ReactElement {
   const history = useHistory();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const location = useLocation();
 
   const [selectedRoute, setSelectedRoute] = useState("/dashboard");
@@ -22,9 +25,22 @@ export default function NavigationBar({}: Props): ReactElement {
     setSelectedRoute(location.pathname);
   }, [location]);
 
+  const handleCreateNewBot = async () => {
+    try {
+      const res = await dispatch(createBot({ builderData: defaultBotTemplate })).then(unwrapResult);
+    } catch (err) {
+      dispatch(setToast({ type: "error", message: err }));
+    }
+  };
+
   const handleSelectMenu = (route: string) => {
-    setSelectedRoute(route);
-    history.push(route);
+    if (route === "/builder") {
+      handleCreateNewBot();
+      history.push("/builder");
+    } else {
+      setSelectedRoute(route);
+      history.push(route);
+    }
   };
 
   const handleSignOut = () => {

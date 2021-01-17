@@ -11,19 +11,9 @@ import { useSelector } from "react-redux";
 import PlusCard from "./PlusCard";
 
 export default function DashboardPage(): ReactElement {
-  const history = useHistory();
   const dispatch = useAppDispatch();
 
   const botsList = useSelector((state: RootState) => state.builderReducer.botsList);
-
-  const handleCreateNewBot = async () => {
-    try {
-      const res = await dispatch(createBot({ builderData: defaultBotTemplate })).then(unwrapResult);
-      history.push("/builder");
-    } catch (err) {
-      dispatch(setToast({ type: "error", message: err }));
-    }
-  };
 
   const handleGetBotsList = async () => {
     try {
@@ -53,7 +43,7 @@ export default function DashboardPage(): ReactElement {
             botsList.map((bot) => {
               return <BotCard key={bot.id} bot={bot} />;
             })}
-          <PlusCard handleCreateNewBot={handleCreateNewBot} />
+          <PlusCard />
         </div>
       </div>
     </div>

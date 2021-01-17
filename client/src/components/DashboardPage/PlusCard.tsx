@@ -1,10 +1,24 @@
+import { unwrapResult } from "@reduxjs/toolkit";
 import React, { ReactElement } from "react";
+import { useHistory } from "react-router-dom";
+import { defaultBotTemplate } from "../../defaultvalues/botTemplates";
+import { createBot } from "../../store/slices/builderSlice";
+import { setToast } from "../../store/slices/toastSlice";
+import { useAppDispatch } from "../../store/store";
 
-interface Props {
-  handleCreateNewBot: Function;
-}
+export default function PlusCard(): ReactElement {
+  const history = useHistory();
+  const dispatch = useAppDispatch();
 
-export default function PlusCard({ handleCreateNewBot }: Props): ReactElement {
+  const handleCreateNewBot = async () => {
+    try {
+      const res = await dispatch(createBot({ builderData: defaultBotTemplate })).then(unwrapResult);
+      history.push("/builder");
+    } catch (err) {
+      dispatch(setToast({ type: "error", message: err }));
+    }
+  };
+
   return (
     <div
       onClick={() => handleCreateNewBot()}
