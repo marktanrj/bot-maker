@@ -6,5 +6,7 @@ files:
 hooks:
   AfterInstall:
     - location: ./server/scripts/npm_install.sh
+      runas: root
   ApplicationStart:
     - location: ./server/scripts/start_app.sh
+      runas: root
