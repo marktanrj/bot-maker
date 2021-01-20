@@ -15,6 +15,18 @@
       "runtimeExecutable": "yarn",
       "runtimeArgs": ["dev"],
       "console": "integratedTerminal"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch JS",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "cwd": "${workspaceFolder}/build",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["index.js"],
+      "console": "integratedTerminal"
     }
   ]
 }

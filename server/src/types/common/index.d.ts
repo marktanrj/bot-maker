@@ -6,4 +6,6 @@ declare global {
       user: any;
     }
   }
+
+  export type Blob = never;
 }
