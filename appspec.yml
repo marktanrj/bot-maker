@@ -1,0 +1,10 @@
+version: 0.0
+os: linux
+files:
+  - source: ./server
+    destination: /home/app
+hooks:
+  AfterInstall:
+    - location: ./server/scripts/npm_install.sh
+  ApplicationStart:
+    - location: ./server/scripts/start_app.sh
