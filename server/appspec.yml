@@ -1,12 +1,12 @@
 version: 0.0
 os: linux
 files:
-  - source: ./server
+  - source: /
     destination: /home/app
 hooks:
   AfterInstall:
-    - location: ./server/scripts/npm_install.sh
+    - location: ./scripts/npm_install.sh
       runas: root
   ApplicationStart:
-    - location: ./server/scripts/start_app.sh
+    - location: ./scripts/start_app.sh
       runas: root
