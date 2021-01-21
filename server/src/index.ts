@@ -16,6 +16,7 @@ import botRoute from "./components/bot/botRoute";
 const PORT = 4000;
 
 const main = async () => {
+  console.log("starting app");
   const connection = await createConnection();
   logger.verbose("Connected to database!");
 
