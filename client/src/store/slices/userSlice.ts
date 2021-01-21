@@ -24,7 +24,6 @@ export const registerUser = createAsyncThunk(
 export const signInUser = createAsyncThunk(
   "userReducer/signInUser",
   async (payload: { identifier: string; password: string }, { rejectWithValue }) => {
-    console.log({ w: "signinuser", serverURL });
     const endpoint = new URL("/user/signin", serverURL);
     try {
       const response = await axios.post(endpoint.href, payload);
@@ -72,17 +71,14 @@ export const userSlice = createSlice({
       state.loadingRegister = false;
     });
     builder.addCase(signInUser.pending, (state, action) => {
-      console.log({ w: "signinuserpending", serverURL });
       state.loadingSignIn = true;
     });
     builder.addCase(signInUser.fulfilled, (state, action) => {
-      console.log({ w: "signinuserfulfilled", serverURL });
       state.loadingSignIn = false;
       state.user = action.payload.user;
       localStorage.setItem("user", JSON.stringify(action.payload.user));
     });
     builder.addCase(signInUser.rejected, (state, action) => {
-      console.log({ w: "signinuserrejected", serverURL });
       state.loadingSignIn = false;
     });
   },
