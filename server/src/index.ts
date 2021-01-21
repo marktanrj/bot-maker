@@ -26,6 +26,12 @@ const main = async () => {
   app.use(cors());
   app.use(helmet());
 
+  app.use(function (req, res, next) {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
+    next();
+  });
+
   app.get("/", (req: Request, res: Response) => {
     res.send("Hello World");
   });
