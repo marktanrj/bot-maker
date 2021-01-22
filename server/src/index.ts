@@ -12,7 +12,7 @@ import helmet from "helmet";
 import errorHandler from "./handlers/errorHandler";
 import userRoute from "./components/user/userRoute";
 import botRoute from "./components/bot/botRoute";
-import config from "./ormconfig";
+import config from "./config/ormconfig";
 
 const PORT = 4000;
 
