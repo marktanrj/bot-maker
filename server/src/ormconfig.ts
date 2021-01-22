@@ -1,4 +1,6 @@
-module.exports = {
+import { ConnectionOptions } from "typeorm";
+
+const config: ConnectionOptions = {
   type: "postgres",
   host: "localhost",
   port: 5432,
@@ -16,3 +18,5 @@ module.exports = {
     subscribersDir: "src/subscriber",
   },
 };
+
+export default config;

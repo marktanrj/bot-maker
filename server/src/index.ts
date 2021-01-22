@@ -12,12 +12,13 @@ import helmet from "helmet";
 import errorHandler from "./handlers/errorHandler";
 import userRoute from "./components/user/userRoute";
 import botRoute from "./components/bot/botRoute";
+import config from "./ormconfig";
 
 const PORT = 4000;
 
 const main = async () => {
   console.log("starting app");
-  const connection = await createConnection();
+  const connection = await createConnection(config);
   logger.verbose("Connected to database!");
 
   const app = express();
