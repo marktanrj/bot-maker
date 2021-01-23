@@ -1,14 +1,11 @@
+import { unwrapResult } from "@reduxjs/toolkit";
+import { Field, Form, Formik } from "formik";
 import React from "react";
-import { Formik, Form, Field } from "formik";
-import * as Yup from "yup";
 import { Link, useHistory } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-
-import { RootState, useAppDispatch } from "../../store/store";
+import * as Yup from "yup";
 import { setToast } from "../../store/slices/toastSlice";
 import { signInUser } from "../../store/slices/userSlice";
-import SpinnerComponent from "../CommonComponents/SpinnerComponent";
-import { unwrapResult } from "@reduxjs/toolkit";
+import { useAppDispatch } from "../../store/store";
 
 interface SignInFormValues {
   identifier: string;
@@ -26,11 +23,9 @@ export default function SignInPage() {
 
   const initialValues: SignInFormValues = { identifier: "", password: "" };
 
-  const loadingSignIn = useSelector((state: RootState) => state.userReducer.loadingSignIn);
-
   const onSubmit = async ({ identifier, password }: SignInFormValues) => {
     try {
-      const response = await dispatch(signInUser({ identifier, password })).then(unwrapResult);
+      await dispatch(signInUser({ identifier, password })).then(unwrapResult);
       history.push("/dashboard");
     } catch (err) {
       dispatch(setToast({ type: "error", message: err }));
@@ -69,7 +64,6 @@ export default function SignInPage() {
                       {errors.password && touched.password ? <div className="text-red-500">{errors.password}</div> : null}
                     </div>
                     <button className="rounded-md p-1 bg-red-500 text-white hover:bg-red-700 focus:outline-none transition ease-out duration-500 transform hover:scale-105">
-                      <SpinnerComponent loading={loadingSignIn} />
                       Sign in
                     </button>
                   </div>

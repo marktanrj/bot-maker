@@ -1,14 +1,11 @@
-import React from "react";
-import { Formik, Form, Field } from "formik";
-import * as Yup from "yup";
-import { Link, useHistory } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-
-import { registerUser } from "../../store/slices/userSlice";
-import { setToast } from "../../store/slices/toastSlice";
-import { RootState, useAppDispatch } from "../../store/store";
-import SpinnerComponent from "../CommonComponents/SpinnerComponent";
 import { unwrapResult } from "@reduxjs/toolkit";
+import { Field, Form, Formik } from "formik";
+import React from "react";
+import { Link, useHistory } from "react-router-dom";
+import * as Yup from "yup";
+import { setToast } from "../../store/slices/toastSlice";
+import { registerUser } from "../../store/slices/userSlice";
+import { useAppDispatch } from "../../store/store";
 
 interface RegisterFormValues {
   username: string;
@@ -30,11 +27,9 @@ export default function RegisterPage() {
 
   const initialValues: RegisterFormValues = { username: "", email: "", password: "", confirmPassword: "" };
 
-  const loadingRegister = useSelector((state: RootState) => state.userReducer.loadingRegister);
-
   const onSubmit = async ({ username, email, password }: RegisterFormValues) => {
     try {
-      const response = await dispatch(registerUser({ username, email, password })).then(unwrapResult);
+      await dispatch(registerUser({ username, email, password })).then(unwrapResult);
       dispatch(setToast({ type: "success", message: "Account created" }));
       history.push("/");
     } catch (err) {
@@ -96,7 +91,6 @@ export default function RegisterPage() {
                       type="submit"
                       className="rounded-md p-1 bg-red-500 text-white hover:bg-red-700 focus:outline-none transition ease-out duration-500 transform hover:scale-105"
                     >
-                      <SpinnerComponent loading={loadingRegister} />
                       Register
                     </button>
                   </div>

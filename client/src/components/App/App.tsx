@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
 
 import NavigationBar from "../CommonComponents/NavigationBar/NavigationBar";
+import LoadingScreen from "../CommonComponents/LoadingScreen";
 const SignInPage = React.lazy(() => import("../SignInPage"));
 const RegisterPage = React.lazy(() => import("../RegisterPage"));
 const NotFoundPage = React.lazy(() => import("../NotFoundPage"));
@@ -22,6 +23,7 @@ function App() {
   return (
     <div className="bg-gray-200 min-h-screen">
       <ToastComponent />
+      <LoadingScreen />
       <Router>
         <PrivateRoute component={NavigationBar} />
         <Suspense fallback={<div>Loading...</div>}>
