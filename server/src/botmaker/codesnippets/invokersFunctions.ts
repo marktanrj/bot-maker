@@ -2,8 +2,8 @@ import { commandSettings, textSettings } from "../../types";
 
 export type allInvokerFunctionType = generateCommandInvokerType | generateTextInvokerType;
 
-export type generateCommandInvokerType = (nameOfFunction: string, settingsObj: commandSettings) => string;
-export type generateTextInvokerType = (nameOfFunction: string, settingsObj: textSettings) => string;
+type generateCommandInvokerType = (nameOfFunction: string, settingsObj: commandSettings) => string;
+type generateTextInvokerType = (nameOfFunction: string, settingsObj: textSettings) => string;
 
 export const generateCommandInvoker: generateCommandInvokerType = (nameOfFunction, settingsObj): string => {
   const { command } = settingsObj;

@@ -1,17 +1,13 @@
 import JSZip from "jszip";
-import fs from "fs";
-
 import { NodeType } from "../../types";
-
-import { startCode } from "../codesnippets/startCode";
-import { packageJsonText } from "../codesnippets/packageJson";
-import { endCode } from "../codesnippets/endCode";
 import { dotenvText } from "../codesnippets/dotenv";
+import { endCode } from "../codesnippets/endCode";
 import { delMiddleware } from "../codesnippets/middlewares";
-
+import { packageJsonText } from "../codesnippets/packageJson";
+import { startCode } from "../codesnippets/startCode";
+import { buildButton, buildButtonCallbacks } from "./buttonManager";
 import { buildContent } from "./contentManager";
 import { buildInvoker } from "./invokerManager";
-import { buildButton, buildButtonCallbacks } from "./buttonManager";
 import { mapPageIdToFunction } from "./mapPageIdToFunction";
 
 interface mainProps {
@@ -38,6 +34,9 @@ export default async ({ botData, botToken }: mainProps): Promise<any> => {
   botData.forEach((page: NodeType) => {
     const nameOfFunction = pageIdToFunctionMap[page.id];
 
+    //add imports
+    importsCode += `const { ${nameOfFunction} } = require("./src/${nameOfFunction}");\n`;
+
     //build button
     const buttonData = page.buttons;
     let compiledButtonText = "";
@@ -49,9 +48,6 @@ export default async ({ botData, botToken }: mainProps): Promise<any> => {
     const contentData = page.content;
     const compiledContentText = buildContent({ contentData, compiledButtonText, nameOfFunction });
     zip.file(`src/${nameOfFunction}.js`, compiledContentText);
-
-    //add imports
-    importsCode += `const { ${nameOfFunction} } = require("./src/${nameOfFunction}");\n`;
 
     //build invokers
     const invokersData = page.invokers;
@@ -78,11 +74,4 @@ export default async ({ botData, botToken }: mainProps): Promise<any> => {
   const fileBuffer = await zip.generateAsync({ type: "base64" });
 
   return fileBuffer;
-
-  // zip
-  // .generateNodeStream({ type: "nodebuffer", streamFiles: true })
-  // .pipe(fs.createWriteStream("out.zip"))
-  // .on("finish", function () {
-  //   console.log("out.zip written.");
-  // });
 };

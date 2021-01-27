@@ -1,4 +1,4 @@
-import { ButtonType, NodeType } from "../../types";
+import { ButtonType } from "../../types";
 import { allButtonFunctionsType, generatePageButton, generateWebsiteButton } from "../codesnippets/buttonFunctions";
 
 interface buildButtonProp {
@@ -12,21 +12,7 @@ export const buildButton = ({ buttonData, nameOfFunction }: buildButtonProp) => 
     const buttonText = generateButton({ nameOfFunction, button });
     return buttonText;
   });
-
-  let fullButtonText = `
-reply_markup: {
-  inline_keyboard: [
-  `;
-
-  buttonsArr.forEach((buttonText) => {
-    fullButtonText += `\n[ \n${buttonText} \n],`;
-  });
-
-  fullButtonText += `
-  ]
-}
-  `;
-
+  const fullButtonText = wrapButtonsWithReplyMarkup(buttonsArr);
   return fullButtonText;
 };
 
@@ -38,6 +24,21 @@ function getButtonFunction(buttonType: string): allButtonFunctionsType {
       return generatePageButton;
   }
   return generateWebsiteButton;
+}
+
+function wrapButtonsWithReplyMarkup(buttonsArr: string[]): string {
+  let fullButtonText = `
+  reply_markup: {
+    inline_keyboard: [
+    `;
+  buttonsArr.forEach((buttonText) => {
+    fullButtonText += `\n[ \n${buttonText} \n],`;
+  });
+  fullButtonText += `
+    ]
+  }
+    `;
+  return fullButtonText;
 }
 
 interface buildButtonCallbacksProp {

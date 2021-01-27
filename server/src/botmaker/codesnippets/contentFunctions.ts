@@ -2,7 +2,7 @@ import { sendMessageSettings, sendPhotoSettings } from "../../types";
 
 export type allContentFunctionsType = generateSendMessageType | generateSendPhotoType;
 
-export type generateSendMessageType = ({
+type generateSendMessageType = ({
   nameOfFunction,
   settingsObj,
   compiledButtonText,
@@ -11,7 +11,7 @@ export type generateSendMessageType = ({
   settingsObj: sendMessageSettings;
   compiledButtonText: string;
 }) => string;
-export type generateSendPhotoType = ({
+type generateSendPhotoType = ({
   nameOfFunction,
   settingsObj,
   compiledButtonText,
